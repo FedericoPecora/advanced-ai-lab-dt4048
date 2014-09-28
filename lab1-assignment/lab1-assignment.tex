@@ -9,6 +9,11 @@
 \usepackage{graphicx}
 \usepackage[ruled,linesnumbered,vlined]{algorithm2e}
 \usepackage{amsmath,amsfonts,amssymb,bm,amsthm}
+\usepackage{listings}
+
+%\lstdefineformat{prompt}{~=\( \sim \)}
+%\lstset{basicstyle=\ttfamily,format=prompt}
+\lstset{basicstyle=\ttfamily}
 
 %From mitko
 \newcommand{\subst}[2]{(#1 \leftarrow #2)}
@@ -113,24 +118,30 @@ In this lab we explore the practical aspects of uninformed and informed (heurist
 The objective is to achieve, by rotating the veritcal or horizontal ``discs'' of the cube, a configuration where all faces have one color (see Fig.~\ref{fig:rc}).  In this lab, we will work on solving the Rubik's Cube puzzle with uninformed and informed search techniques.  Please take a moment to recall the theory covered in class --- see parts 1--3 of the course slides at \url{aass.oru.se/~fpa} or on Blackboard.
 
 \section{Setup}
-The codebase you will be using in this lab depends on the Java implementation of the AIMA library (\url{aima-java.googlecode.com}).  The necessary libraries are automatically downloaded by the build environment which you will use to build the codebase (Gradle).  Open a command prompt, and check out the lab codebase as follows:
-\begin{verbatim}
+The codebase you will be using in this lab depends on the Java implementation of the AIMA library (\url{aima-java.googlecode.com}).  The necessary libraries are already included in the codebase.
+%automatically downloaded by the build environment which you will use to build the codebase (Gradle).
+Open a command prompt, and check out the lab codebase as follows:
+\begin{lstlisting}
 $ svn checkout http://advanced-ai-lab-dt4048.\
 googlecode.com/svn/trunk/ advanced-ai-lab-dt4048
-\end{verbatim}
+\end{lstlisting}
 Build the codebase with Gradle:
-\begin{verbatim}
+\begin{lstlisting}
 $ cd advanced-ai-lab-dt4048
 $ gradle install
-\end{verbatim}
+\end{lstlisting}
 If no errors were encountered, you can now use Gradle to automatically set up an Eclipse project:
-\begin{verbatim}
+\begin{lstlisting}
 $ gradle eclipse
-\end{verbatim}
-Now you can start Eclipse, create a new Java project, de-select ``Use default location'', and browse to the path of the downloaded codebase. You are now ready to start!
+\end{lstlisting}
+On the PCs in T002, issuing command {\tt eclipse} starts the Eclipse C/C++ IDE.  For this lab you need the Eclipse Java IDE, which is started as follows:
+\begin{lstlisting}
+$ cd
+$ eclipse/eclipse
+\end{lstlisting}
+Once you have launched the Eclipse Java IDE, create a new Java project, de-select ``Use default location'', and browse to the path of the downloaded codebase. You are now ready to start!
 
 \section{Representation}
-
 The first step in achieving an automated procedure for solving any problem is to decide on a representation to use for describing the {\em states} explored during search.  Many representations are possible for the Rubik's Cube, and we have implemented one for you.
 
 \begin{figure}[!ht]
@@ -155,19 +166,19 @@ The constructor {\tt RubiksCube(n,m)} can be invoked to create an initial state 
 
 In this lab we will use the AIMA implementations of uninformed and informed search algorithms.  To create a problem, four ingredients are needed: a {\tt RubiksCube} (which represents the initial state), a {\tt RubiksCubeFunctionFactory} (which provides the list of actions through methods {\tt getSymmetricActionsFunction()} and {\tt getAsymmetricActionsFunction}), a function to compute the state resulting from the application of a given action (method {\tt getResultFunction()} of class {\tt RubiksCubeFunctionFactory}), and a {\tt RCgoalTest} (which provides the goal test function):
 
-\begin{verbatim}
+\begin{lstlisting}
 Problem problem =
   new Problem(rubiksCube,
     RubiksCubeFunctionFactory.getSymmetricActionsFunction(),
     RubiksCubeFunctionFactory.getResultFunction(),
     new RCgoalTest());
-\end{verbatim}
+\end{lstlisting}
 
 \noindent A search algorithm (e.g., Breadth First Search) is instantiated as follows:
 
-\begin{verbatim}
+\begin{lstlisting}
 Search srch = new BreadthFirstSearch(new TreeSearch());
-\end{verbatim}
+\end{lstlisting}
 
 \noindent and search is involked by calling the method {\tt srch.search(problem)}.  Note that tree search was used in the example --- a {\tt GraphSearch} class is also provided.  Class {\tt TestRubiksCube} contains an initial example to start with.
 
@@ -178,24 +189,24 @@ Search srch = new BreadthFirstSearch(new TreeSearch());
 {\ex{}\label{ex:ex2} Why does using Graph Search alter the results of the previous exercise?  How in particular does this affect DFS?\vspace{0.1cm}}
 
 {\ex{}\label{ex:ex3} What does this mean, and when do you encounter this problem?  
-\begin{verbatim}
+\begin{lstlisting}
 Exception in thread "main" java.lang.OutOfMemoryError:
   GC overhead limit exceeded
     at RubiksCube.copyFaces(RubiksCube.java:316)
     at RubiksCube.rotate(RubiksCube.java:436)
         ...
-\end{verbatim}
+\end{lstlisting}
 How can the problem be overcome (without using heuristics)?  Try your solution and write down your observations.
 \vspace{0.1cm}}
 
 {\ex{}\label{ex:ex4} The moves you have used so far generate a symmetric search space, meaning that for all moves there exists an inverse (e.g., the changes brought about by action {\tt FRONT} are undone by action {\tt FRONTI}).  Can we remove the inverse moves? Is this true in general or only for the Rubik's Cube? Try the search strategies in Exercises~\ref{ex:ex1}--\ref{ex:ex3} with the modified action set --- to do so, replace the call to factory method
-\begin{verbatim}
+\begin{lstlisting}
 RubiksCubeFunctionFactory.getSymmetricActionsFunction()
-\end{verbatim}
+\end{lstlisting}
 with
-\begin{verbatim}
+\begin{lstlisting}
 RubiksCubeFunctionFactory.getAsymmetricActionsFunction()
-\end{verbatim}
+\end{lstlisting}
 \vspace{0.1cm}}
 
 
