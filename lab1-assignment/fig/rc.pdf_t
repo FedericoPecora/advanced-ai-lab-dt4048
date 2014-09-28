@@ -1,0 +1,13 @@
+\begin{picture}(0,0)%
+\includegraphics{fig/rc.pdf}%
+\end{picture}%
+\setlength{\unitlength}{1450sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(15147,5826)(-6,-4486)
+\end{picture}%
