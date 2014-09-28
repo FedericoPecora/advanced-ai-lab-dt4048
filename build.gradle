@@ -8,7 +8,7 @@ apply plugin: 'maven'
 // your package is used as a binary.
 apply plugin: 'application'
 // The main class that will be executed when you do 'gradle run'
-mainClassName = 'TestRubiksCube'
+mainClassName = 'lab1.TestRubiksCube'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -17,7 +17,7 @@ repositories {
 
   // The meta-csp-framework (and all its dependencies) is on
   // the Maven Central repository
-  mavenCentral()
+  //mavenCentral()
 
   // You can include any other Maven repository like this:
   //maven {
@@ -34,12 +34,11 @@ group = 'se.oru.advanced-ai-2014'
 
 dependencies {
 
-  // This pulls in the meta-csp-framework jar
-  compile 'com.googlecode.aima-java:aima-core:0.11.0'
+  // This pulls in the aima-core jar
+  //compile 'com.googlecode.aima-java:aima-core:0.11.0'
 
-  // Add the following if you need to include jars that are not
-  // in Maven Central and that you have places in the directory "lib"
-  // (NOTE: you have to create this directory if you need it)
-  //compile fileTree(dir: 'lib', include: '**/*.jar')
+  // NOTE: aima-core statically included to overcome
+  // proxy problems in T002
+  compile fileTree(dir: 'lib', include: '**/*.jar')
 
 }
