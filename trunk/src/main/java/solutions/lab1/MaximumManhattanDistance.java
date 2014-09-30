@@ -36,7 +36,7 @@ public class MaximumManhattanDistance implements HeuristicFunction{
 				}
 			}
 		}
-		return Math.max((((double)cornerVal)/4), (((double)edgeVal)/4));
+		return Math.max((((double)cornerVal)/8), (((double)edgeVal)/8));
 	}
 	
 

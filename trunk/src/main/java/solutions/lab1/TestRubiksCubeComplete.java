@@ -45,17 +45,17 @@ public class TestRubiksCubeComplete {
 		//[Need to /8]
 //		Search search = new AStarSearch(new GraphSearch(), new MisplacedCubiesNotAdmissible(rubiksCube));
 		//Admissible version much much faster
-		Search search = new AStarSearch(new GraphSearch(), new MisplacedCubiesAdmissible(rubiksCube));
+//		Search search = new AStarSearch(new GraphSearch(), new MisplacedCubiesAdmissible(rubiksCube));
 		
 		//Can we do better?  Implement 3D-MD.  Is it admissible?
-		//[No: need to /8]
+		//[No: need to /16]
 //		Search search = new AStarSearch(new GraphSearch(), new ManhattanDistance(rubiksCube));
 		
 		//MAX {MH_corners, MH_edges} is better, try it...
-		//[Note: need to /4]
+		//[Note: need to /8]
 //		Search search = new AStarSearch(new GraphSearch(), new CornerManhattanDistance(rubiksCube));
 //		Search search = new AStarSearch(new GraphSearch(), new EdgeManhattanDistance(rubiksCube));
-//		Search search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
+		Search search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
 						
 		long start = Calendar.getInstance().getTimeInMillis();
 		try {

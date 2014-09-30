@@ -33,7 +33,7 @@ public class ManhattanDistance implements HeuristicFunction {
 				}
 			}
 		}
-		return (((double)retVal)/8);
+		return (((double)retVal)/16);
 	}
 	
 	private int evaluateManhattanDistanceOf(int id, int i, int j, int k) {
