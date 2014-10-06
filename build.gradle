@@ -8,7 +8,8 @@ apply plugin: 'maven'
 // your package is used as a binary.
 apply plugin: 'application'
 // The main class that will be executed when you do 'gradle run'
-mainClassName = 'lab1.TestRubiksCube'
+//mainClassName = 'lab1.TestRubiksCube'
+mainClassName = 'lab2.EasyTestTCSP'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -40,5 +41,6 @@ dependencies {
   // NOTE: aima-core statically included to overcome
   // proxy problems in T002
   compile fileTree(dir: 'lib', include: '**/*.jar')
+  //compile 'org.metacsp:meta-csp-framework:1.0.314-SNAPSHOT'
 
 }
