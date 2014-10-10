@@ -113,40 +113,43 @@ svn update
 \section{Qualitative Temporal Reasoning}
 
 \section{TCSP}
+you can create a variable for a TCSP as follows:
+
+{\tt timePointA} 
 
 \begin{lstlisting}
 
-MultiTimePoint timePointA = (MultiTimePoint)groundSolver.createVariable();
+MultiTimePoint timePointA 
+	= (MultiTimePoint)groundSolver.createVariable();
 
 \end{lstlisting}
+
+\noindent The code below shows that the distance between the origin time point and {\tt timePointA} are either (5-7) or (4-6).
 
 \begin{lstlisting}
 
-DistanceConstraint preparingCoffee = new DistanceConstraint(new Bounds(5, 7), new Bounds(8, 10));
-		preparingCoffee.setFrom(groundSolver.getSource());
-		preparingCoffee.setTo(coffeeReady);
-		cons.add(preparingCoffee);
+DistanceConstraint distanceBetweenOriginandA = 
+	new DistanceConstraint(
+		new Bounds(5, 7), new Bounds(4, 6));
+
+distanceBetweenOriginandA.setFrom(source);
+distanceBetweenOriginandA.setTo(timePointA);
 
 \end{lstlisting}
 
+\noindent The distance constraint is added to the constraint solver as follows:
 
 \begin{lstlisting}
 
-		DistanceConstraint preparingCoffee = new DistanceConstraint(new Bounds(5, 7), new Bounds(8, 10));
-		preparingCoffee.setFrom(groundSolver.getSource());
-		preparingCoffee.setTo(coffeeReady);
-		cons.add(preparingCoffee);
-
+groundSolver.addConstraints(
+	new DistanceConstraint[] {distanceBetweenOriginandA});
 \end{lstlisting}
 
-\begin{lstlisting}
-
-groundSolver.addConstraints(new DistanceConstraint[] {preparingCoffee,travelToServCoffee,travelToServSugorPot,validDurationForHotCoffee, servingTime});
-
-\end{lstlisting}
 
 
 In a restaurant, we have both a human waiter and a robot waiter. A guest enters the restaurant and orders a coffee. The human waiter takes (5-7) min to make a coffee and the robot waiter prepares the coffee between (8-10) min. In this restaurant, this is the robot waiter serving a coffee. The trip form the counter where the coffee prepared to any guest table is either (4-10) if it navigates through the tables and guests or (6-8) minutes if it choose a fixed predefined path. The serving coffee task is fully accomplished when the robot bring a sugar pot to guest a table after bringing a coffee. In order to avoid coffee getting cold, the sugar pot should be served at most 12 minutes after coffee prepared. The whole serving time (i.e., waiting time for both coffee and sugar) should not exceed than 15 minutes. 
+
+The scenario above can be a result of an autonomous decision process determining what to do for serving a coffee. We are interested to verify this sequence of actions mentioned above is feasible with respect to all the temporal constraints. 
 
 
 
@@ -160,12 +163,14 @@ What are the possible solutions?
 
 
 {\ex{}\label{ex:ex1}  
-Look at the brack in the high level, and extract one possible scenario. play with the latest time
+Look at the branches shown in {\tt SearchTreeFrame} window, and extract one possible scenario.
 \vspace{0.1cm}}
 
 
 {\ex{}\label{ex:ex1}  
-The restaurant increases the waiting time by at most 20 min. instead of  15 min. extract a solution which is is not
+The restaurant increases the waiting time by at most 20 min. Model this fact a constraint and see the new set of solutions. There are solutions other than earliest and latest time solution. Extract a solution that is different form the earliest and latest solution (Implement constraint that reflect these choices).
+
+
 \vspace{0.1cm}}
 
 
