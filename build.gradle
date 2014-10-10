@@ -18,7 +18,8 @@ repositories {
 
   // The meta-csp-framework (and all its dependencies) is on
   // the Maven Central repository
-  //mavenCentral()
+  mavenCentral()
+  mavenLocal()
 
   // You can include any other Maven repository like this:
   //maven {
@@ -40,7 +41,7 @@ dependencies {
 
   // NOTE: aima-core statically included to overcome
   // proxy problems in T002
-  compile fileTree(dir: 'lib', include: '**/*.jar')
-  //compile 'org.metacsp:meta-csp-framework:1.0.314-SNAPSHOT'
+  //compile fileTree(dir: 'lib', include: '**/*.jar')
+  compile 'org.metacsp:meta-csp-framework:0.0.0-SNAPSHOT'
 
 }

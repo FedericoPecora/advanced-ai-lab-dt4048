@@ -20,44 +20,72 @@ public class EasyTestTCSP {
 	 */
 	public static void main(String[] args) {
 		
-		TCSPSolver metaSolver = new TCSPSolver(0, 100, 0);
-		DistanceConstraintSolver groundSolver = (DistanceConstraintSolver)metaSolver.getConstraintSolvers()[0];		
+		//Instantiate a TCSP solver - this solver does the search in the space of STPs
+		TCSPSolver metaSolver = new TCSPSolver(0, 100);
+		
+		//Below the TCSP there is another solver which maintains MultiTimePoints and
+		//constraints w/ disjunctions (DistanceConstraints)
+		//The TCSP metaSolver "tests" its assignments by adding them as constraints to this solver.
+		//This solver is therefore the "ground" solver of the TCSP
+		DistanceConstraintSolver groundSolver = (DistanceConstraintSolver)metaSolver.getConstraintSolvers()[0];
+		
+		//Below the ground solver, there is a STP solver, which performs propagation through Floyd-Warshall  
 		APSPSolver groundGroundSolver = (APSPSolver)groundSolver.getConstraintSolvers()[0];
 		
+		//A MultiTimepoint is != from a TimePoint because its domain is NOT pair of bounds,
+		//rather a multitude of pairs of bounds, depending on the disjunctions in the DistanceConstraints.
+		//For each MultiTimePoint in the groundSolver there is a TimePoint in the STP, whose variables
+		//are TimePoints.  The domain of a TimePoint is ONE pair of bounds.
+		//If the DistanceConstraints have no disjunctions, then the domains of MultiTimepoints are the same
+		//as the domains of their corresponding TimePoints.
+		//
+		//Source represents the origin of time
 		MultiTimePoint source = groundSolver.getSource();
+		MultiTimePoint multiTimePointA = (MultiTimePoint)groundSolver.createVariable();
+		MultiTimePoint multiTimePointB = (MultiTimePoint)groundSolver.createVariable();
 		
-		MultiTimePoint timePointA = (MultiTimePoint)groundSolver.createVariable();
+		//Observe the bounds of the multiTimePoints BEFORE adding any constraints
+		System.out.println("Bounds before adding constraints:");
+		System.out.println(" A: " +multiTimePointA.getDomain());
+		System.out.println(" B: " +multiTimePointB.getDomain());
 		
 		ConstraintNetwork.draw(groundSolver.getConstraintNetwork(), "TCSP");
 		ConstraintNetwork.draw(groundGroundSolver.getConstraintNetwork(), "STP");
 		
-		
-
-		
+		//Add a disjunctive constraint between source and multiTimePointA
 		DistanceConstraint distanceBetweenOriginandA = new DistanceConstraint(new Bounds(5, 7), new Bounds(4, 6));
 		distanceBetweenOriginandA.setFrom(source);
-		distanceBetweenOriginandA.setTo(timePointA);
+		distanceBetweenOriginandA.setTo(multiTimePointA);
+
+		//Add a non-disjunctive constraint between source and multiTimePointB
+		DistanceConstraint distanceBetweenOriginandB = new DistanceConstraint(new Bounds(23, 56));
+		distanceBetweenOriginandB.setFrom(source);
+		distanceBetweenOriginandB.setTo(multiTimePointB);
+
+		//Add the constraint to the ground solver
+		groundSolver.addConstraints(distanceBetweenOriginandA, distanceBetweenOriginandB);
 		
+		//Observe the bounds of the multiTimePoints AFTER adding any constraints
+		System.out.println("Bounds before adding constraints:");
+		System.out.println(" A: " +multiTimePointA.getDomain());
+		System.out.println(" B: " +multiTimePointB.getDomain());
 		
-		groundSolver.addConstraints(new DistanceConstraint[] {distanceBetweenOriginandA});
-		
+		//Provide variable and value ordering heuristics for the high-level CSP
 		VariableOrderingH varOH = new MostConstrainedFirstVarOH();		
 		ValueOrderingH valOH = new WidestIntervalFirstValOH();
 		
-		
+		//The "meta-constraint" of the high-level CSP imposes that "labelings have to be consistent".
+		//This is implemented by a class called TCSPLabeling (which extends MetaConstraint)
 		TCSPLabeling metaCons = new TCSPLabeling(varOH, valOH);
 		metaSolver.addMetaConstraint(metaCons);
 		
+		//Ask the meta-solver to return one solution, if possible, of the TCSP
 		System.out.println("Solved? " + metaSolver.backtrack());		
-		
-		
-		System.out.println(timePointA);
-		
-		long loweBound = timePointA.getLowerBound();
-		long upperBound = timePointA.getUpperBound();
-		System.out.println(loweBound);
-		System.out.println(upperBound);
-		
+				
+		//Observe the bounds of the multiTimePoints AFTER solving
+		System.out.println("Bounds before adding constraints:");
+		System.out.println(" A: " +multiTimePointA.getDomain());
+		System.out.println(" B: " +multiTimePointB.getDomain());		
 		metaSolver.draw();	
 
 	}
