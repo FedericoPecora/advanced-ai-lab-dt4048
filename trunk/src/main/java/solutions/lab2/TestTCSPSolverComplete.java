@@ -36,7 +36,7 @@ public class TestTCSPSolverComplete {
 		 * coffee getting cold, guest must have 15 min after the coffee prepared. The whole serving time should not exceed than 25 min.         
 		 */ 
 		
-		//MultiTimePoint guestOrder = (MultiTimePoint)groundSolver.createVariable();
+		MultiTimePoint guestOrder = (MultiTimePoint)groundSolver.createVariable();
 		MultiTimePoint coffeeReady = (MultiTimePoint)groundSolver.createVariable();
 		MultiTimePoint servingCoffee = (MultiTimePoint)groundSolver.createVariable();
 		MultiTimePoint servingSugarPot = (MultiTimePoint)groundSolver.createVariable();
@@ -46,10 +46,14 @@ public class TestTCSPSolverComplete {
 		ConstraintNetwork.draw(groundGroundSolver.getConstraintNetwork(), "STP");
 		
 		Vector<DistanceConstraint> cons = new Vector<DistanceConstraint>();
-
+		
+		DistanceConstraint guestOrderTime = new DistanceConstraint(new Bounds(3, 3));
+		guestOrderTime.setFrom(groundSolver.getSource());
+		guestOrderTime.setTo(guestOrder);
+		cons.add(guestOrderTime);
 		
 		DistanceConstraint preparingCoffee = new DistanceConstraint(new Bounds(5, 7), new Bounds(8, 10));
-		preparingCoffee.setFrom(groundSolver.getSource());
+		preparingCoffee.setFrom(guestOrder);
 		preparingCoffee.setTo(coffeeReady);
 		cons.add(preparingCoffee);
 		
@@ -75,12 +79,10 @@ public class TestTCSPSolverComplete {
 		cons.add(validDurationForHotCoffee);
 
 		DistanceConstraint servingTime = new DistanceConstraint(new Bounds(0, 20));
-		servingTime.setFrom(groundSolver.getSource());
+		servingTime.setFrom(guestOrder);
 		servingTime.setTo(servingSugarPot);
 		cons.add(servingTime);
 
-
-		
 		groundSolver.addConstraints(cons.toArray(new DistanceConstraint[cons.size()]));
 		//groundSolver.addConstraints(new DistanceConstraint[] {preparingCoffee,travelToServCoffee,travelToServSugorPot,validDurationForHotCoffee, servingTime});
 		
