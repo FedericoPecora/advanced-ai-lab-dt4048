@@ -23,25 +23,30 @@
 package lab2;
 
 import java.util.Calendar;
+import java.util.Vector;
 import java.util.logging.Level;
 
+import org.metacsp.framework.ConstraintNetwork;
 import org.metacsp.framework.Variable;
 import org.metacsp.meta.simplePlanner.ProactivePlanningDomain;
 import org.metacsp.meta.simplePlanner.SimplePlanner;
 import org.metacsp.meta.simplePlanner.SimplePlannerInferenceCallback;
 import org.metacsp.multi.activity.Activity;
 import org.metacsp.multi.activity.ActivityNetworkSolver;
+import org.metacsp.multi.allenInterval.AllenIntervalConstraint;
+import org.metacsp.multi.allenInterval.AllenIntervalNetworkSolver;
 import org.metacsp.sensing.ConstraintNetworkAnimator;
 import org.metacsp.sensing.InferenceCallback;
 import org.metacsp.sensing.Sensor;
 import org.metacsp.time.Bounds;
+import org.metacsp.utility.UI.ConstraintNetworkFrame;
 import org.metacsp.utility.logging.MetaCSPLogging;
 import org.metacsp.utility.timelinePlotting.TimelinePublisher;
 import org.metacsp.utility.timelinePlotting.TimelineVisualizer;
 
 import cern.colt.Arrays;
 
-public class TestAnimatedSTP {	
+public class ExAbductiveReasoningWithSTPs {	
 	
 	public static void main(String[] args) {
 
@@ -51,15 +56,14 @@ public class TestAnimatedSTP {
 		MetaCSPLogging.setLevel(ans.getClass(), Level.FINE);
 
 		InferenceCallback cb = new InferenceCallback() {
+			private Vector<Activity> recognizedActs = new Vector<Activity>();
 			@Override
 			public void doInference(long currentTime) {
-				//Variable[] acts = ans.getConstraintNetwork().getVariables();
-				Activity[] acts = ans.getActivitiesWithSymbols(new String[] {"Off()"});
-				System.out.println("======== [" + currentTime + "] Activities in the ConstraintNetwork: =========");
-				for (Activity var : acts) {
-					System.out.println("  " + var);
-				}
-				System.out.println("=======================================================================");
+				/**
+				 * To get all activities with value "Off" on component "Stove":
+				 * Activity[] acts = ans.getActivitiesWithSymbols("Stove", new String[] {"Off"})
+				 */
+				//YOUR CODE HERE
 			}
 		};
 
@@ -73,7 +77,7 @@ public class TestAnimatedSTP {
 		sensorB.registerSensorTrace("sensorTraces/stove.st",origin);
 		
 		//Visualize progression
-		TimelinePublisher tp = new TimelinePublisher(ans, new Bounds(0,60000), true, "Time", "Location", "Stove");
+		TimelinePublisher tp = new TimelinePublisher(ans, new Bounds(0,60000), true, "Time", "Location", "Stove", "Human");
 		TimelineVisualizer tv = new TimelineVisualizer(tp);
 		tv.startAutomaticUpdate(1000);
 

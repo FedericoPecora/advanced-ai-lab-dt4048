@@ -1,4 +1,4 @@
-package lab2;
+package lab2.examples;
 
 import org.metacsp.framework.ConstraintNetwork;
 import org.metacsp.framework.ValueOrderingH;
@@ -13,7 +13,7 @@ import org.metacsp.multi.TCSP.MultiTimePoint;
 import org.metacsp.time.APSPSolver;
 import org.metacsp.time.Bounds;
 
-public class EasyTestTCSP {
+public class TCSPExample {
 
 	/**
 	 * @param args
@@ -81,13 +81,15 @@ public class EasyTestTCSP {
 		
 		//Ask the meta-solver to return one solution, if possible, of the TCSP
 		System.out.println("Solved? " + metaSolver.backtrack());		
-				
+	
+		//Show the search tree of the TCSP solver
+		metaSolver.draw();	
+
 		//Observe the bounds of the multiTimePoints AFTER solving
 		System.out.println("Bounds before adding constraints:");
 		System.out.println(" A: " +multiTimePointA.getDomain());
-		System.out.println(" B: " +multiTimePointB.getDomain());		
-		metaSolver.draw();	
-
+		System.out.println(" B: " +multiTimePointB.getDomain());
+	
 	}
 
 }
