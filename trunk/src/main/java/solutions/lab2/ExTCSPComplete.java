@@ -18,7 +18,7 @@ import org.metacsp.time.Bounds;
 import org.metacsp.time.TimePoint;
 import org.metacsp.utility.logging.MetaCSPLogging;
 
-public class TestTCSPSolverComplete {
+public class ExTCSPComplete {
 	
 	public static void main(String args[]) {
 		
@@ -41,7 +41,6 @@ public class TestTCSPSolverComplete {
 		MultiTimePoint servingCoffee = (MultiTimePoint)groundSolver.createVariable();
 		MultiTimePoint servingSugarPot = (MultiTimePoint)groundSolver.createVariable();
 		
-		
 		ConstraintNetwork.draw(groundSolver.getConstraintNetwork(), "TCSP");
 		ConstraintNetwork.draw(groundGroundSolver.getConstraintNetwork(), "STP");
 		
@@ -61,7 +60,6 @@ public class TestTCSPSolverComplete {
 //		coffeePreparing.setFrom(groundSolver.getSource());
 //		coffeePreparing.setTo(coffeeReady);
 //		cons.add(coffeePreparing);
-		
 
 		DistanceConstraint travelToServCoffee = new DistanceConstraint(new Bounds(5, 10), new Bounds(7, 7) );
 		travelToServCoffee.setFrom(coffeeReady);

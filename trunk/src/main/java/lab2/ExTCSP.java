@@ -1,11 +1,13 @@
 package lab2;
 
-public class TestTCSPSolver {
+public class ExTCSP {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		//YOUR CODE HERE
+		
 	}
 }
