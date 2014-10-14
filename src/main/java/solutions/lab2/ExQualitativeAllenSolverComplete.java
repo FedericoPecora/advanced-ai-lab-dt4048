@@ -219,6 +219,12 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		
 		ConstraintNetwork.draw(solver.getConstraintNetwork(),"BEFORE PROPAGATION");
 		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//Try to add the constraints
 		if (!solver.addConstraints(con0,con1,con2)) System.out.println("Failed to add constraints!");
 		else System.out.println("Added constraints!");
