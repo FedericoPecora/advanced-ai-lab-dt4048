@@ -66,7 +66,7 @@ public class ExAbductiveReasoningWithSTPsComplete {
 						Activity cooking = (Activity) ans.createVariable("Human");
 						cooking.setSymbolicDomain("Cooking");
 						AllenIntervalConstraint cookingEqualsOn = new AllenIntervalConstraint(AllenIntervalConstraint.Type.Equals);
-						AllenIntervalConstraint cookingDuringKitchen = new AllenIntervalConstraint(AllenIntervalConstraint.Type.Finishes);
+						AllenIntervalConstraint cookingDuringKitchen = new AllenIntervalConstraint(AllenIntervalConstraint.Type.DuringOrEqualsOrStartsOrFinishes);
 						cookingEqualsOn.setFrom(cooking);
 						cookingEqualsOn.setTo(stoveAct);
 						cookingDuringKitchen.setFrom(cooking);
@@ -79,6 +79,9 @@ public class ExAbductiveReasoningWithSTPsComplete {
 						}
 						if (ans.addConstraints(cookingEqualsOn,cookingDuringKitchen, after)) {
 							recognizedActs.add(cooking);
+						}
+						else {
+							ans.removeVariable(cooking);
 						}
 					}
 				}
