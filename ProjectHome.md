@@ -1,0 +1,1 @@
+Codebase used for the Advanced Artificial Intelligence Course, given as part of the One/Two Year Master's in Robotics and Intelligent Systems, Örebro University (Sweden)
