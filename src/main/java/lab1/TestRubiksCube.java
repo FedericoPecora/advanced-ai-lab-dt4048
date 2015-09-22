@@ -1,12 +1,9 @@
 package lab1;
 import java.util.Calendar;
 
-import solutions.lab1.MaximumManhattanDistance;
-import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.TreeSearch;
-import aima.core.search.informed.AStarSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
 
 public class TestRubiksCube {

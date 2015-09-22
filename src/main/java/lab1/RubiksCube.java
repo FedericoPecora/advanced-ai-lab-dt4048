@@ -2,7 +2,6 @@ package lab1;
 import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
-//import java.util.Set;
 import java.util.Vector;
 
 import aima.core.agent.Action;

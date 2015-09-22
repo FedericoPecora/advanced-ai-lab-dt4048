@@ -26,25 +26,15 @@ import java.util.Calendar;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.metacsp.framework.ConstraintNetwork;
-import org.metacsp.framework.Variable;
-import org.metacsp.meta.simplePlanner.ProactivePlanningDomain;
-import org.metacsp.meta.simplePlanner.SimplePlanner;
-import org.metacsp.meta.simplePlanner.SimplePlannerInferenceCallback;
 import org.metacsp.multi.activity.Activity;
 import org.metacsp.multi.activity.ActivityNetworkSolver;
-import org.metacsp.multi.allenInterval.AllenIntervalConstraint;
-import org.metacsp.multi.allenInterval.AllenIntervalNetworkSolver;
 import org.metacsp.sensing.ConstraintNetworkAnimator;
 import org.metacsp.sensing.InferenceCallback;
 import org.metacsp.sensing.Sensor;
 import org.metacsp.time.Bounds;
-import org.metacsp.utility.UI.ConstraintNetworkFrame;
 import org.metacsp.utility.logging.MetaCSPLogging;
 import org.metacsp.utility.timelinePlotting.TimelinePublisher;
 import org.metacsp.utility.timelinePlotting.TimelineVisualizer;
-
-import cern.colt.Arrays;
 
 public class ExAbductiveReasoningWithSTPs {	
 	
