@@ -95,12 +95,17 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 		 * r_ij.getTypes()
 		 * 
 		 * Operations on QualitativeAllenIntervalConstraints r1 and r2:
-		 * QualitativeAllenIntervalConstraints composition = getComposition(r1,r2);
+		 * QualitativeAllenIntervalConstraint composition = getComposition(r1,r2);
 		 * QualitativeAllenIntervalConstraint intersection = getIntersection(r1,r2);
+		 * 
+		 * To remove a QualitativeAllenIntervalConstraint r_ij from a completeNetwork
+		 * completeNetwork.removeConstraint(r_ij);
+		 * 
+		 * To add a QualitativeAllenIntervalConstraint r_ij to a completeNetwork
+		 * completeNetwork.addConstraint(r_ij);
 		 */
 		
 		//YOUR CODE HERE
-		
 		return true;
 	}
 
