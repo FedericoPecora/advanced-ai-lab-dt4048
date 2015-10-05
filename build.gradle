@@ -37,11 +37,11 @@ group = 'se.oru.advanced-ai-2014'
 dependencies {
 
   // This pulls in the aima-core jar
-  //compile 'com.googlecode.aima-java:aima-core:0.11.0'
+  compile 'com.googlecode.aima-java:aima-core:0.11.0'
 
   // NOTE: aima-core statically included to overcome
   // proxy problems in T002
-  compile fileTree(dir: 'lib', include: '**/*.jar')
+  //compile fileTree(dir: 'lib', include: '**/*.jar')
   //compile 'org.metacsp:meta-csp-framework:0.0.0-SNAPSHOT'
   compile 'org.metacsp:meta-csp-framework:1.1.4'
 
