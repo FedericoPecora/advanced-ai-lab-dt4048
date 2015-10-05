@@ -87,7 +87,7 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 		 * To get variables in the network:
 		 * Variable[] vars = this.completeNetwork.getVariables();
 		 * 
-		 * To get the constraint between two variables:
+		 * To get the constraint between two variables in the network:
 		 * QualitativeAllenIntervalConstraint r_ij =
 		 *    (QualitativeAllenIntervalConstraint)completeNetwork.getConstraint(vars[i], vars[j]);
 		 *    
@@ -98,10 +98,10 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 		 * QualitativeAllenIntervalConstraint composition = getComposition(r1,r2);
 		 * QualitativeAllenIntervalConstraint intersection = getIntersection(r1,r2);
 		 * 
-		 * To remove a QualitativeAllenIntervalConstraint r_ij from a completeNetwork
+		 * To remove a QualitativeAllenIntervalConstraint r_ij from the network
 		 * completeNetwork.removeConstraint(r_ij);
 		 * 
-		 * To add a QualitativeAllenIntervalConstraint r_ij to a completeNetwork
+		 * To add a QualitativeAllenIntervalConstraint r_ij to the network
 		 * completeNetwork.addConstraint(r_ij);
 		 */
 		

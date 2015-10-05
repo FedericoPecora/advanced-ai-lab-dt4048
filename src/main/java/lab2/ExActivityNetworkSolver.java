@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.metacsp.framework.ConstraintNetwork;
 import org.metacsp.multi.activity.Activity;
 import org.metacsp.multi.activity.ActivityNetworkSolver;
+import org.metacsp.multi.activity.SymbolicVariableActivity;
 import org.metacsp.multi.allenInterval.AllenIntervalConstraint;
 import org.metacsp.multi.allenInterval.AllenIntervalNetworkSolver;
 import org.metacsp.time.Bounds;
@@ -43,9 +44,9 @@ public class ExActivityNetworkSolver {
 //		MetaCSPLogging.setLevel(solver.getConstraintSolvers()[0].getClass(), Level.FINEST);
 
 		ActivityNetworkSolver solver = new ActivityNetworkSolver(0,500);
-		Activity act1 = (Activity)solver.createVariable("Component");
+		SymbolicVariableActivity act1 = (SymbolicVariableActivity)solver.createVariable("Component");
 		act1.setSymbolicDomain("A");
-		Activity act2 = (Activity)solver.createVariable("Component");
+		SymbolicVariableActivity act2 = (SymbolicVariableActivity)solver.createVariable("Component");
 		act2.setSymbolicDomain("B");
 		
 		ConstraintNetwork.draw(solver.getConstraintNetwork());
