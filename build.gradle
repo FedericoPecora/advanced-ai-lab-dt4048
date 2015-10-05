@@ -18,7 +18,7 @@ repositories {
 
   // The meta-csp-framework (and all its dependencies) is on
   // the Maven Central repository
-  //mavenCentral()
+  mavenCentral()
   mavenLocal()
 
   // You can include any other Maven repository like this:
@@ -43,5 +43,6 @@ dependencies {
   // proxy problems in T002
   compile fileTree(dir: 'lib', include: '**/*.jar')
   //compile 'org.metacsp:meta-csp-framework:0.0.0-SNAPSHOT'
+  compile 'org.metacsp:meta-csp-framework:1.1.4'
 
 }
