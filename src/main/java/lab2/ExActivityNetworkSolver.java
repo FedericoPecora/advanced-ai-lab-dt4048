@@ -20,24 +20,22 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-package solutions.lab2;
+package lab2;
 
 import java.util.logging.Level;
 
-import org.metacsp.framework.Constraint;
 import org.metacsp.framework.ConstraintNetwork;
 import org.metacsp.multi.activity.Activity;
 import org.metacsp.multi.activity.ActivityNetworkSolver;
 import org.metacsp.multi.activity.SymbolicVariableActivity;
 import org.metacsp.multi.allenInterval.AllenIntervalConstraint;
 import org.metacsp.multi.allenInterval.AllenIntervalNetworkSolver;
-import org.metacsp.multi.symbols.SymbolicValueConstraint;
 import org.metacsp.time.Bounds;
 import org.metacsp.utility.logging.MetaCSPLogging;
 import org.metacsp.utility.timelinePlotting.TimelinePublisher;
 import org.metacsp.utility.timelinePlotting.TimelineVisualizer;
 
-public class ExActivityNetworkSolverComplete {
+public class ExActivityNetworkSolver {
 	
 	public static void main(String[] args) {
 		
@@ -86,14 +84,8 @@ public class ExActivityNetworkSolverComplete {
 		ConstraintNetwork.draw(solver.getConstraintSolvers()[0].getConstraintNetwork(), "LAYER 1 (Network of Allen Intervals)");
 		//  LAYER 0: an APSPSolver (network of Simple Distance Constraints, STP)
 		ConstraintNetwork.draw(((AllenIntervalNetworkSolver)solver.getConstraintSolvers()[0]).getConstraintSolvers()[0].getConstraintNetwork(), "LAYER 0 (Network of Time Points)");
-
-		//INCONSISTENT: B before A
-		AllenIntervalConstraint con5 = new AllenIntervalConstraint(AllenIntervalConstraint.Type.Before);
-		con5.setFrom(act2);
-		con5.setTo(act1);
 		
-		if (solver.addConstraint(con5)) System.out.println("Added " + con5);
-		else System.out.println("Could not add " + con5);
+		//YOUR CODE HERE
 				
 	}
 

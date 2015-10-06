@@ -29,22 +29,19 @@ public class ExTCSPComplete {
 		MetaCSPLogging.setLevel(metaSolver.getClass(), Level.FINEST);
 
 		/*
-			In a restaurant, we have both a human barman and a robot
-			waiter. Both can prepare coffees, but only the robot waiter can
-			deliver items to guests. A guest enters the restaurant and orders a
-			coffee at time 3. The human waiter takes between 5 and 7 minutes to
-			prepare a coffee, while the robot waiter takes 8 to 10 minutes to
-			prepare a coffee. The trip form the counter where the prepared coffee
-			is placed when ready to any guest table is either 5 to 10 minutes long
-			if the robot navigates through the tables and guests, or 7 minutes
-			long if it chooses a fixed predefined path.  The serving coffee task
-			is fully accomplished when the robot brings a sugar pot to the guest’s
-			table. This action is either takes 4 to 10 minutes taking the first
-			pre-defined path or 6 to 8 minutes taking the second path.  In order
-			to avoid the coffee getting cold, the sugar pot should be served at
-			most 12 minutes after the is coffee prepared. The whole serving time
-			(i.e., waiting time for both coffee and sugar) should not exceed 15
-			minutes.		 
+			In a restaurant, we have both a human barman and a robot waiter. Both can prepare
+			coffees, but only the robot waiter can deliver items to guests. A guest enters the
+			restaurant and orders a coffee at time 3. The human waiter takes between 5 and 7
+			minutes to prepare a coffee, while the robot waiter takes 8 to 10 minutes to prepare
+			a coffee. The trip form the counter where the prepared coffee is placed when ready
+			to any guest table is either 5 to 10 minutes long if the robot navigates through
+			the tables and guests, or 7 minutes long if it chooses a fixed predefined path. The
+			serving coffee task is fully accomplished when the robot brings sugar to the guest’s
+			table. This action either takes 4 to 10 minutes (if the robot brings a sugar bowl) or
+			6 to 8 minutes (if the robot brings sugar bags). In order to avoid the coffee getting
+			cold, the sugar should be served at most 12 minutes after the coffee is prepared.
+			The whole serving time (i.e., the time between ordering and having both coffee
+			and sugar on the table) should not exceed 15 minutes.		 
 		 */ 
 		
 		MultiTimePoint guestOrder = (MultiTimePoint)groundSolver.createVariable();
