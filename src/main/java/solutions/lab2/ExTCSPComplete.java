@@ -29,11 +29,22 @@ public class ExTCSPComplete {
 		MetaCSPLogging.setLevel(metaSolver.getClass(), Level.FINEST);
 
 		/*
-		 * In a restaurant, we have both a human waiter and a robot waiter. A guest Enters a restaurant and orders a coffee. 
-		 * . A human waiter takes (5-7) min to make a coffee ready and A robot waiter takes (8-10) min to make a coffee ready. Then, 
-		 * the robot travel to serve a coffee. It either takes (5-10) min if it travel among the guest and tables or takes 7 min if it travels in a 
-		 * fixed path designed only for a robot. Then, the robot has to serve a sugorpot which it takes either [5,10] or 6 min. In order to avoid 
-		 * coffee getting cold, guest must have 15 min after the coffee prepared. The whole serving time should not exceed than 25 min.         
+			In a restaurant, we have both a human barman and a robot
+			waiter. Both can prepare coffees, but only the robot waiter can
+			deliver items to guests. A guest enters the restaurant and orders a
+			coffee at time 3. The human waiter takes between 5 and 7 minutes to
+			prepare a coffee, while the robot waiter takes 8 to 10 minutes to
+			prepare a coffee. The trip form the counter where the prepared coffee
+			is placed when ready to any guest table is either 5 to 10 minutes long
+			if the robot navigates through the tables and guests, or 7 minutes
+			long if it chooses a fixed predefined path.  The serving coffee task
+			is fully accomplished when the robot brings a sugar pot to the guest’s
+			table. This action is either takes 4 to 10 minutes taking the first
+			pre-defined path or 6 to 8 minutes taking the second path.  In order
+			to avoid the coffee getting cold, the sugar pot should be served at
+			most 12 minutes after the is coffee prepared. The whole serving time
+			(i.e., waiting time for both coffee and sugar) should not exceed 15
+			minutes.		 
 		 */ 
 		
 		MultiTimePoint guestOrder = (MultiTimePoint)groundSolver.createVariable();
@@ -76,7 +87,7 @@ public class ExTCSPComplete {
 		validDurationForHotCoffee.setTo(servingSugarPot);
 		cons.add(validDurationForHotCoffee);
 
-		DistanceConstraint servingTime = new DistanceConstraint(new Bounds(0, 20));
+		DistanceConstraint servingTime = new DistanceConstraint(new Bounds(0, 15));
 		servingTime.setFrom(guestOrder);
 		servingTime.setTo(servingSugarPot);
 		cons.add(servingTime);
