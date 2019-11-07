@@ -10,12 +10,6 @@ import aima.core.agent.impl.DynamicAction;
 public class RubiksCube {
 	
 	int n;
-//	private Face front_face = new Face("y"); //level 0
-//	private Face back_face = new Face("w"); //level n
-//	private Face left_face = new Face("g"); // level 0
-//	private Face right_face = new Face("b"); //level n
-//	private Face down_face = new Face("o");//level 0
-//	private Face up_face = new Face("r"); //level n
 
 	/**
 	 * Rotates the left disc 90 degrees counter-clockwise 
@@ -124,6 +118,25 @@ public class RubiksCube {
 		cube = new Cubie[n][n][n];
 		initialize();
 		generateRandomMoves(moveNumber);
+	}
+
+	/**
+	 * Apply a given move to this {@link RubiksCube}
+	 * @param a A valid {@link RubiksCube} move.
+	 */
+	public void move(Action a) {
+		if (a.equals(RubiksCube.BACK)) this.moveBack();
+		else if (a.equals(RubiksCube.BACKI)) this.moveBackI();
+		else if (a.equals(RubiksCube.FRONT)) this.moveFront();
+		else if (a.equals(RubiksCube.FRONTI)) this.moveFrontI();
+		else if (a.equals(RubiksCube.BOTTOM)) this.moveDown();
+		else if (a.equals(RubiksCube.BOTTOMI)) this.moveDownI();
+		else if (a.equals(RubiksCube.TOP)) this.moveUp();
+		else if (a.equals(RubiksCube.TOPI)) this.moveUpI();
+		else if (a.equals(RubiksCube.LEFT)) this.moveLeft();
+		else if (a.equals(RubiksCube.LEFTI)) this.moveLeftI();
+		else if (a.equals(RubiksCube.RIGHT)) this.moveRight();
+		else if (a.equals(RubiksCube.RIGHTI)) this.moveRightI();
 	}
 	
 	private void generateRandomMoves(int m){
@@ -265,7 +278,7 @@ public class RubiksCube {
 	public String toString() {
 		String ret = "";
 		for (rubikCubeFace face : rubikCubeFace.values()) {
-			ret += printFace(getState(), face) + "\n\n";
+			ret += printFace(getState(), face) + "\n";
 		}
 		return ret;
 	}

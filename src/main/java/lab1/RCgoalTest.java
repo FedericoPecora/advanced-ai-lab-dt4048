@@ -1,5 +1,6 @@
 package lab1;
-import aima.core.search.framework.GoalTest;
+
+import aima.core.search.framework.problem.GoalTest;
 
 public class RCgoalTest implements GoalTest{
 
@@ -41,7 +42,7 @@ public class RCgoalTest implements GoalTest{
 				}
 			}			
 		}
-		System.out.println(rc);
+		//System.out.println(rc);
 		return true;
 	}
 

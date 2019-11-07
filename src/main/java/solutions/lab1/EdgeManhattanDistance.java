@@ -1,6 +1,6 @@
 package solutions.lab1;
+import aima.core.search.framework.evalfunc.HeuristicFunction;
 import lab1.RubiksCube;
-import aima.core.search.framework.HeuristicFunction;
 
 public class EdgeManhattanDistance implements HeuristicFunction{
 
