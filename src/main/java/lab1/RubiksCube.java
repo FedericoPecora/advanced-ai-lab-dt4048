@@ -1,5 +1,7 @@
 package lab1;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
@@ -9,7 +11,8 @@ import aima.core.agent.impl.DynamicAction;
 
 public class RubiksCube {
 	
-	int n;
+	private int n;
+	private List<Action> initialMoves = null;
 
 	/**
 	 * Rotates the left disc 90 degrees counter-clockwise 
@@ -108,6 +111,14 @@ public class RubiksCube {
 	}
 	
 	/**
+	 * Get the list of initial moves applied to this {@link RubiksCube}.
+	 * @return The list of initial moves applied to this {@link RubiksCube}.
+	 */
+	public List<Action> getInitialMoves() {
+		return initialMoves;
+	}
+	
+	/**
 	 * Creates a (n x n x n) Rubik's Cube. Its state is obtained by applying a given number of random (symmetric) moves
 	 * from the "solved" state. 
 	 * @param n The dimension of the cube. 
@@ -117,7 +128,7 @@ public class RubiksCube {
 		this.n = n;
 		cube = new Cubie[n][n][n];
 		initialize();
-		generateRandomMoves(moveNumber);
+		this.initialMoves = generateRandomMoves(moveNumber);
 	}
 
 	/**
@@ -139,9 +150,11 @@ public class RubiksCube {
 		else if (a.equals(RubiksCube.RIGHTI)) this.moveRightI();
 	}
 	
-	private void generateRandomMoves(int m){
+	private ArrayList<Action> generateRandomMoves(int m){
 		//Action[] actions = RubikCubeFunctionFactory.getSymmetricActionsFunction().actions(this).toArray(new Action[RubikCubeFunctionFactory.getSymmetricActionsFunction().actions(this).size()]);
-		String initialMoves = "";
+//		String initialMoves = "";
+		
+		ArrayList<Action> ret = new ArrayList<Action>();
 		
 		Set<Action> actionSet = new LinkedHashSet<Action>();
 		actionSet.add(RubiksCube.BACK);
@@ -162,55 +175,68 @@ public class RubiksCube {
 	    for (int i = 0; i < m; i++){
 	    	int randomInt = randomGenerator.nextInt(actions.length);
 			if (RubiksCube.FRONT.equals(actions[randomInt]))	{
+				ret.add(RubiksCube.FRONT);
 				moveFront();
-				initialMoves += RubiksCube.FRONT + " - "; 
+//				initialMoves += RubiksCube.FRONT + " - "; 
 			}
 			else if (RubiksCube.BACK.equals(actions[randomInt])) {
+				ret.add(RubiksCube.BACK);
 				moveBack();
-				initialMoves += RubiksCube.BACK + " - ";
+//				initialMoves += RubiksCube.BACK + " - ";
 			}
 			else if (RubiksCube.LEFT.equals(actions[randomInt])) {
+				ret.add(RubiksCube.LEFT);
 				moveLeft();
-				initialMoves += RubiksCube.LEFT + " - ";
+//				initialMoves += RubiksCube.LEFT + " - ";
 			}
 			else if (RubiksCube.RIGHT.equals(actions[randomInt])) {
+				ret.add(RubiksCube.RIGHT);
 				moveRight();
-				initialMoves += RubiksCube.RIGHT + " - ";
+//				initialMoves += RubiksCube.RIGHT + " - ";
 			}
 			else if (RubiksCube.TOP.equals(actions[randomInt])) {
+				ret.add(RubiksCube.TOP);
 				moveUp();
-				initialMoves += RubiksCube.TOP + " - ";
+//				initialMoves += RubiksCube.TOP + " - ";
 			}
 			else if (RubiksCube.BOTTOM.equals(actions[randomInt])) {
+				ret.add(RubiksCube.BOTTOM);
 				moveDown();
-				initialMoves += RubiksCube.BOTTOM + " - ";
+//				initialMoves += RubiksCube.BOTTOM + " - ";
 			}
 			else if (RubiksCube.FRONTI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.FRONTI);
 				moveFrontI();
-				initialMoves += RubiksCube.FRONTI + " - ";
+//				initialMoves += RubiksCube.FRONTI + " - ";
 			}
 			else if (RubiksCube.BACKI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.BACKI);
 				moveBackI();
-				initialMoves += RubiksCube.BACKI + " - ";
+//				initialMoves += RubiksCube.BACKI + " - ";
 			}
 			else if (RubiksCube.LEFTI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.LEFTI);
 				moveLeftI();
-				initialMoves += RubiksCube.LEFTI + " - ";
+//				initialMoves += RubiksCube.LEFTI + " - ";
 			}
 			else if (RubiksCube.RIGHTI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.RIGHTI);
 				moveRightI();
-				initialMoves += RubiksCube.RIGHTI + " - ";
+//				initialMoves += RubiksCube.RIGHTI + " - ";
 			}
 			else if (RubiksCube.TOPI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.TOPI);
 				moveUpI();
-				initialMoves += RubiksCube.TOPI + " - ";
+//				initialMoves += RubiksCube.TOPI + " - ";
 			}
 			else if (RubiksCube.BOTTOMI.equals(actions[randomInt])) {
+				ret.add(RubiksCube.BOTTOMI);
 				moveDownI();
-				initialMoves += RubiksCube.BOTTOMI + " - ";
+//				initialMoves += RubiksCube.BOTTOMI + " - ";
 			}
 	    }
-    	System.out.println("Initial moves: " + initialMoves.substring(0,initialMoves.length()-3));
+    	//System.out.println("Initial moves: " + initialMoves.substring(0,initialMoves.length()-3));
+	    return ret;
 	}
 
 	/**
