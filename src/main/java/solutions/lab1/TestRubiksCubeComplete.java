@@ -2,10 +2,13 @@ package solutions.lab1;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import lab1.MisplacedCubiesNotAdmissible;
 import lab1.RCgoalTest;
 import lab1.RubiksCube;
 import lab1.RubiksCubeFunctionFactory;
+import lab1.util.SimpleCubeViewer;
 import aima.core.agent.Action;
 import aima.core.search.framework.SearchForActions;
 import aima.core.search.framework.problem.Problem;
@@ -23,16 +26,19 @@ public class TestRubiksCubeComplete {
 	 */
 	public static void main(String[] args) {
 
-		RubiksCube rubiksCube = new RubiksCube(3, 4);
+		SimpleCubeViewer scv = new SimpleCubeViewer(400, 400);
 		
-		System.out.println("Initial configuration:\n============\n" + rubiksCube + "\n============");
+		RubiksCube rubiksCube = new RubiksCube(3, 7);
+		
+		System.out.println("Initial moves: " + rubiksCube.getInitialMoves());
+		scv.showMoves(rubiksCube.getInitialMoves());
 		
 		Problem problem = new Problem(rubiksCube, RubiksCubeFunctionFactory.getSymmetricActionsFunction(), 
 				RubiksCubeFunctionFactory.getResultFunction(), new RCgoalTest());
 
 		//BFS runs out of mem; BFS w/ GS is actually slower because of the rep. state checking
 		//BUT: BFS is optimal, and solutions are shallow... so....
-		SearchForActions search = new BreadthFirstSearch(new TreeSearch()); //1-4, 5 = OOM
+//		SearchForActions search = new BreadthFirstSearch(new TreeSearch()); //1-4, 5 = OOM
 		
 		//Re-run BFS with asymmetric actions - predict whether this will be better and write your hypothesis
 		//Verify and write comment and completion of explanation.
@@ -64,7 +70,7 @@ public class TestRubiksCubeComplete {
 		//[Note: need to /8]
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new CornerManhattanDistance(rubiksCube));
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new EdgeManhattanDistance(rubiksCube));
-//		SearchForActions search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
+		SearchForActions search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
 						
 		long start = Calendar.getInstance().getTimeInMillis();
 		List<Action> solution;
@@ -77,15 +83,19 @@ public class TestRubiksCubeComplete {
 			}
 			else {
 				System.out.println("Solution found!");
-				System.out.println("SOLUTION: " + search.findActions(problem));
+				System.out.println("SOLUTION: " + solution);
 				System.out.println("Metrics: " + search.getMetrics());
 				System.out.println("Time [msec]: " + time);
 				
-				//Verify the solution
-				for (Action a : solution) {
-					rubiksCube.move(a);
-				}
-				System.out.println("Configuration after applying the solution:\n============\n" + rubiksCube + "\n============");
+				JOptionPane.showMessageDialog(null, "Click OK to visualize the solution", "Solution found!", JOptionPane.INFORMATION_MESSAGE);
+				//Visualize solution
+				scv.showMoves(solution);
+				
+//				//Verify the solution
+//				for (Action a : solution) {
+//					rubiksCube.move(a);
+//				}
+//				System.out.println("Configuration after applying the solution:\n============\n" + rubiksCube + "\n============");
 			}
 		}
 		catch (Exception e) { e.printStackTrace(); }

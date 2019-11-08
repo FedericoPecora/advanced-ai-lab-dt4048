@@ -2,19 +2,25 @@ package lab1;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import aima.core.agent.Action;
 import aima.core.search.framework.SearchForActions;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.framework.qsearch.TreeSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
+import lab1.util.SimpleCubeViewer;
 
 public class TestRubiksCube {
 
 	public static void main(String[] args) {
 
+		SimpleCubeViewer scv = new SimpleCubeViewer(400, 400);
+		
 		RubiksCube rubiksCube = new RubiksCube(3, 4);
 		
-		System.out.println("Initial configuration:\n============\n" + rubiksCube + "\n============");
+		System.out.println("Initial moves: " + rubiksCube.getInitialMoves());
+		scv.showMoves(rubiksCube.getInitialMoves());
 		
 		Problem problem = new Problem(rubiksCube, RubiksCubeFunctionFactory.getSymmetricActionsFunction(), 
 				RubiksCubeFunctionFactory.getResultFunction(), new RCgoalTest());
@@ -32,15 +38,14 @@ public class TestRubiksCube {
 			}
 			else {
 				System.out.println("Solution found!");
-				System.out.println("SOLUTION: " + search.findActions(problem));
+				System.out.println("SOLUTION: " + solution);
 				System.out.println("Metrics: " + search.getMetrics());
 				System.out.println("Time [msec]: " + time);
 				
-				//Verify the solution
-				for (Action a : solution) {
-					rubiksCube.move(a);
-				}
-				System.out.println("Configuration after applying the solution:\n============\n" + rubiksCube + "\n============");
+				JOptionPane.showMessageDialog(null, "Click OK to visualize the solution", "Solution found!", JOptionPane.INFORMATION_MESSAGE);
+				
+				//Visualize solution
+				scv.showMoves(solution);				
 			}
 		}
 		catch (Exception e) { e.printStackTrace(); }
