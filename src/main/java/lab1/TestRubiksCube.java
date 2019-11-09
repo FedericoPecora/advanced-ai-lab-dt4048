@@ -33,20 +33,37 @@ public class TestRubiksCube {
 			System.out.println("Searching for a solution...");
 			solution = search.findActions(problem);
 			long time = (Calendar.getInstance().getTimeInMillis()-start);
-			if (solution.isEmpty()) {
-				System.out.println("Problem not solvable.");
+			
+			//Check if reached state is a solution (may not be in case of local search)
+			for (Action a : solution) rubiksCube.move(a);
+			RCgoalTest goalTest = new RCgoalTest();
+			boolean goalReached = goalTest.isGoalState(rubiksCube);
+			
+			if (!goalReached) {
+				//Show message
+				JOptionPane.showMessageDialog(null,
+						"Time: " + time/1000.0 + " seconds" +
+						"\nMetrics: " + search.getMetrics() +
+						"\nClick OK to see explored states",
+						"Solution not found within time/iteration limit", JOptionPane.INFORMATION_MESSAGE);
+				
+				if (!solution.isEmpty()) {
+					//Visualize incomplete progress towards solution (local search)
+					scv.showMoves(solution);
+				}
 			}
 			else {
-				System.out.println("Solution found!");
-				System.out.println("SOLUTION: " + solution);
-				System.out.println("Metrics: " + search.getMetrics());
-				System.out.println("Time [msec]: " + time);
-				
-				JOptionPane.showMessageDialog(null, "Click OK to visualize the solution", "Solution found!", JOptionPane.INFORMATION_MESSAGE);
-				
+				//Show message
+				JOptionPane.showMessageDialog(null,
+						"Time: " + time/1000.0 + " seconds" +
+						"\nSolution length: " + solution.size() +
+						"\nMetrics: " + search.getMetrics() +
+						"\nClick OK to visualize the solution",
+						"Solution found!", JOptionPane.INFORMATION_MESSAGE);
 				//Visualize solution
-				scv.showMoves(solution);				
+				scv.showMoves(solution);
 			}
+			
 		}
 		catch (Exception e) { e.printStackTrace(); }
 
