@@ -1,9 +1,11 @@
 package solutions.lab1;
+import java.util.function.ToDoubleFunction;
+
 import aima.core.search.framework.evalfunc.HeuristicFunction;
 import lab1.RubiksCube;
 
 
-public class CornerManhattanDistance implements HeuristicFunction{
+public class CornerManhattanDistance implements HeuristicFunction, ToDoubleFunction<Object> {
 
 	private int [][][] goal;
 	private int n;
@@ -53,6 +55,11 @@ public class CornerManhattanDistance implements HeuristicFunction{
 	private boolean isCorner(int i, int j, int k, int n){
 		if((i == 0 || i == n) && (j == 0 || j == n) && (k == 0 || k == n)) return true;
 		return false;
+	}
+	
+	@Override
+	public double applyAsDouble(Object arg0) {
+		return h(arg0);
 	}
 
 }

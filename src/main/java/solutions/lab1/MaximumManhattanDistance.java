@@ -1,8 +1,10 @@
 package solutions.lab1;
+import java.util.function.ToDoubleFunction;
+
 import aima.core.search.framework.evalfunc.HeuristicFunction;
 import lab1.RubiksCube;
 
-public class MaximumManhattanDistance implements HeuristicFunction{
+public class MaximumManhattanDistance implements HeuristicFunction, ToDoubleFunction<Object> {
 
 	private int [][][] goal;
 	private int n;
@@ -72,5 +74,10 @@ public class MaximumManhattanDistance implements HeuristicFunction{
 			if(edges[l].equals(res)) return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public double applyAsDouble(Object arg0) {
+		return h(arg0);
 	}
 }

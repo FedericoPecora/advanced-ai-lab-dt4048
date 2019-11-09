@@ -1,8 +1,10 @@
 package solutions.lab1;
+import java.util.function.ToDoubleFunction;
+
 import aima.core.search.framework.evalfunc.HeuristicFunction;
 import lab1.RubiksCube;
 
-public class ManhattanDistance implements HeuristicFunction {
+public class ManhattanDistance implements HeuristicFunction, ToDoubleFunction<Object> {
 
 	private int [][][] goal = null;
 	private int n = -1;
@@ -47,6 +49,11 @@ public class ManhattanDistance implements HeuristicFunction {
 			}
 		}
 		return 0;
+	}
+	
+	@Override
+	public double applyAsDouble(Object arg0) {
+		return h(arg0);
 	}
 
 }

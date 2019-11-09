@@ -15,6 +15,8 @@ import aima.core.search.framework.problem.Problem;
 import aima.core.search.framework.qsearch.GraphSearch;
 import aima.core.search.framework.qsearch.TreeSearch;
 import aima.core.search.informed.AStarSearch;
+import aima.core.search.local.Scheduler;
+import aima.core.search.local.SimulatedAnnealingSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
 import aima.core.search.uninformed.DepthFirstSearch;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
@@ -28,7 +30,7 @@ public class TestRubiksCubeComplete {
 
 		SimpleCubeViewer scv = new SimpleCubeViewer(400, 400);
 		
-		RubiksCube rubiksCube = new RubiksCube(3, 7);
+		RubiksCube rubiksCube = new RubiksCube(3, 10);
 		
 		System.out.println("Initial moves: " + rubiksCube.getInitialMoves());
 		scv.showMoves(rubiksCube.getInitialMoves());
@@ -71,6 +73,13 @@ public class TestRubiksCubeComplete {
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new CornerManhattanDistance(rubiksCube));
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new EdgeManhattanDistance(rubiksCube));
 		SearchForActions search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
+		
+//		Scheduler sched = new Scheduler(40, 0.0045, 1000);
+//		SearchForActions search = new SimulatedAnnealingSearch(new MaximumManhattanDistance(rubiksCube), sched);
+//		SearchForActions search = new SimulatedAnnealingSearch(new MisplacedCubiesAdmissible(rubiksCube), sched);
+//		SearchForActions search = new SimulatedAnnealingSearch(new ManhattanDistance(rubiksCube), sched);
+//		SearchForActions search = new SimulatedAnnealingSearch(new EdgeManhattanDistance(rubiksCube), sched);
+//		SearchForActions search = new SimulatedAnnealingSearch(new CornerManhattanDistance(rubiksCube), sched);
 						
 		long start = Calendar.getInstance().getTimeInMillis();
 		List<Action> solution;
@@ -78,25 +87,37 @@ public class TestRubiksCubeComplete {
 			System.out.println("Searching for a solution...");
 			solution = search.findActions(problem);
 			long time = (Calendar.getInstance().getTimeInMillis()-start);
-			if (solution.isEmpty()) {
-				System.out.println("Problem not solvable.");
+			
+			//Check if reached state is a solution (may not be in case of local search)
+			for (Action a : solution) rubiksCube.move(a);
+			RCgoalTest goalTest = new RCgoalTest();
+			boolean goalReached = goalTest.isGoalState(rubiksCube);
+			
+			if (!goalReached) {
+				//Show message
+				JOptionPane.showMessageDialog(null,
+						"Time: " + time/1000.0 + " seconds" +
+						"\nMetrics: " + search.getMetrics() +
+						"\nClick OK to see explored states",
+						"Solution not found within time/iteration limit", JOptionPane.INFORMATION_MESSAGE);
+				
+				if (!solution.isEmpty()) {
+					//Visualize incomplete progress towards solution (local search)
+					scv.showMoves(solution);
+				}
 			}
 			else {
-				System.out.println("Solution found!");
-				System.out.println("SOLUTION: " + solution);
-				System.out.println("Metrics: " + search.getMetrics());
-				System.out.println("Time [msec]: " + time);
-				
-				JOptionPane.showMessageDialog(null, "Click OK to visualize the solution", "Solution found!", JOptionPane.INFORMATION_MESSAGE);
+				//Show message
+				JOptionPane.showMessageDialog(null,
+						"Time: " + time/1000.0 + " seconds" +
+						"\nSolution length: " + solution.size() +
+						"\nMetrics: " + search.getMetrics() +
+						"\nClick OK to visualize the solution",
+						"Solution found!", JOptionPane.INFORMATION_MESSAGE);
 				//Visualize solution
 				scv.showMoves(solution);
-				
-//				//Verify the solution
-//				for (Action a : solution) {
-//					rubiksCube.move(a);
-//				}
-//				System.out.println("Configuration after applying the solution:\n============\n" + rubiksCube + "\n============");
 			}
+			
 		}
 		catch (Exception e) { e.printStackTrace(); }
 
