@@ -115,19 +115,17 @@ In this lab we explore the practical aspects of uninformed and informed (heurist
 \caption{{\small The Rubik's cube puzzle was invented by Hungarian architect Ern\H{o} Rubik in 1975.}}
 \label{fig:rc}
 \end{figure}
-The objective is to achieve, by rotating the veritcal or horizontal ``discs'' of the cube, a configuration where all faces have one color (see Fig.~\ref{fig:rc}).
-% In this lab, we will work on solving the Rubik's Cube puzzle with uninformed and informed search techniques.
-Please take a moment to recall the theory covered in class --- see parts 1--4 of the course slides on Blackboard.
+The objective is to achieve, by rotating the vertical or horizontal ``discs'' of the cube, a configuration where all faces have one color (see Fig.~\ref{fig:rc}), which we call a {\em solved}, or {\em goal} state. In this lab, we will work on solving the Rubik's Cube puzzle with uninformed and informed search techniques. Please take a moment to recall the theory covered in class --- see parts 1--4 of the course slides on Blackboard.
 
 \section{Setup}
-The codebase you will be using in this lab depends on the Java implementation of the AIMA library (\url{https://github.com/aimacode/aima-java}).  The necessary libraries are already included in the codebase.
+The code base you will be using in this lab depends on the Java implementation of the AIMA library (\url{https://github.com/aimacode/aima-java}).  The necessary libraries are already included in the code base.
 %automatically downloaded by the build environment which you will use to build the codebase (Gradle).
-Open a command prompt, and check out the lab codebase as follows:
+Open a command prompt, and check out the lab code base as follows:
 \begin{lstlisting}
 $ git clone https://github.com/FedericoPecora/\
 advanced-ai-lab-dt4048.git
 \end{lstlisting}
-Build the codebase with Gradle:
+Build the code base with Gradle:
 \begin{lstlisting}
 $ cd advanced-ai-lab-dt4048
 $ ./gradlew install
@@ -141,7 +139,7 @@ $ ./gradlew eclipse
 % $ cd
 % $ eclipse/eclipse
 % \end{lstlisting}
-Once you have launched the Eclipse Java IDE, create a new Java project, de-select ``Use default location'', and browse to the path of the downloaded codebase. You are now ready to start!
+Once you have launched the Eclipse Java IDE, create a new Java project, de-select ``Use default location'', and browse to the path of the downloaded code base. You are now ready to start!
 
 \section{Representation}
 The first step in achieving an automated procedure for solving any problem is to decide on a representation to use for describing the {\em states} explored during search.  Many representations are possible for the Rubik's Cube, and we have implemented one for you.
@@ -149,15 +147,15 @@ The first step in achieving an automated procedure for solving any problem is to
 \begin{figure}[!ht]
 \centering
 \input{fig/rcState.pdf_t}
-\caption{{\small Elements used to represent the state of the Rubick's Cube.}}
+\caption{{\small Elements used to represent the state of the Rubik's Cube.}}
 \label{fig:rcState}
 \end{figure}
 
-A state is represented by an $n \times n \times n$ array of {\tt Cubie} objects, each of which represents one of the small cubes that make up the Rubik's Cube. This representation works for Rubick's cubes of arbitrary size $n$, where $n$ is the length in {\tt Cubies} of an edge of the Rubick's cube (hence, a ``common'' Rubick's cube, such as the one depicted in Figure~\ref{fig:rcState}, has size $n = 3$ and is composed of 27 {\tt Cubies} in total).
+A state is represented by an $n \times n \times n$ array of {\tt Cubie} objects, each of which represents one of the small cubes that make up the Rubik's Cube. This representation works for Rubik's cubes of arbitrary size $n$, where $n$ is the length in {\tt Cubies} of an edge of the Rubik's cube (hence, a ``common'' Rubik's cube, such as the one depicted in Figure~\ref{fig:rcState}, has size $n = 3$ and is composed of 27 {\tt Cubies} in total).
 
 Each {\tt Cubie} has 6 {\tt Face}s, but not all of them are visible.  A Rubik's Cube is an instance of class {\tt RubiksCube}, which maintains the 3D array of {\tt Cubie}s and provides the methods that implement the moves (i.e., how the state of the Rubik's Cube is altered by each move).  By convention (see Figure~\ref{fig:rcState}), the yellow face is the ``front'' face, the white face is the ``back'' face, the red face is the ``top'' face, the green face is the ``left'' face, the blue face is the ``right'' face, and the orange face is the ``bottom'' face.  
 
-The moves are defined as in Figure~\ref{fig:rcMoves}.  Note that in Rubik's Cube of size $n = 3$ the center {\tt Cubie}s remain fixed, e.g., the middle of the ``front'' face will always be yellow. Hence, there is no need to define a move for rotating the ``center'' disc.
+The moves are defined as in Figure~\ref{fig:rcMoves}.  Note that in the Rubik's Cube of size $n = 3$, the center {\tt Cubie}s remain fixed, hence, the middle of the ``front'' face will always be yellow, the middle of the ``left'' face will always be green, and so on. As a consequence, there is no need to define a move for rotating the ``center'' disc.
 
 \begin{figure}[!ht]
 \centering
@@ -166,15 +164,15 @@ The moves are defined as in Figure~\ref{fig:rcMoves}.  Note that in Rubik's Cube
 \label{fig:rcMoves}
 \end{figure}
 
-The constructor {\tt RubiksCube(n,m)} can be invoked to create an initial state for the Rubik's Cube problem, where {\tt n} is the size of the Rubik's Cube, and {\tt m} is a seed for creating an initial unsolved state. In this lab, we will focus on cubes with size $2 \leq n \leq 3$, although the implementation can be easily extended to accommodate $n > 3$.  The creation of an initial state based on {\tt m} consists of applying {\tt m} random moves to the goal state.  You can use larger values of {\tt m} to create more challenging problems --- note, however, that {\tt m} is not a good estimator of problem difficulty.
+The constructor {\tt RubiksCube(n,r)} can be invoked to create an initial state for the Rubik's Cube problem, where {\tt n} is the size of the Rubik's Cube, and {\tt r} is a seed for creating an initial unsolved state. In this lab, we will focus on cubes with size $2 \leq n \leq 3$, although the implementation can be easily extended to accommodate $n > 3$.  The creation of an initial state based on {\tt r} consists of applying {\tt r} random moves to the solved state.  You can use larger values of {\tt r} to create more challenging problems --- note, however, that {\tt r} is not a good estimator of problem difficulty.
 
 \section{Search}
-In this lab we will use the AIMA implementations of uninformed and informed search algorithms.  To create a problem, four ingredients are needed: a {\tt RubiksCube} (which represents the initial state), a {\tt RubiksCubeFunctionFactory} (which provides the list of actions through methods {\tt getSymmetricActionsFunction()} and {\tt getAsymmetricActionsFunction}), a function to compute the state resulting from the application of a given action (method {\tt getResultFunction()} of class {\tt RubiksCubeFunctionFactory}), and a {\tt RCgoalTest} (which provides the goal test function):
+In this lab we will use the AIMA implementations of uninformed and informed search algorithms.  To create a problem, four ingredients are needed: a {\tt RubiksCube} (which represents the initial state), a {\tt RubiksCubeFunctionFactory} (which provides the list of actions through methods {\tt getSymActionsFunction()} and {\tt getAsymActionsFunction}), a function to compute the state resulting from the application of a given action (method {\tt getResultFunction()} of class {\tt RubiksCubeFunctionFactory}), and a {\tt RCgoalTest} (which provides the goal test function):
 
 \begin{lstlisting}
 Problem problem =
   new Problem(rubiksCube,
-    RubiksCubeFunctionFactory.getSymmetricActionsFunction(),
+    RubiksCubeFunctionFactory.getSymActionsFunction(),
     RubiksCubeFunctionFactory.getResultFunction(),
     new RCgoalTest());
 \end{lstlisting}
@@ -186,7 +184,7 @@ SearchForActions search =
   new BreadthFirstSearch(new TreeSearch());
 \end{lstlisting}
 
-\noindent and search is involked by calling the method {\tt search.findActions(problem)}.  Note that tree search was used in the example --- a {\tt GraphSearch} class is also provided.  Class {\tt TestRubiksCube} contains an initial example to start with.
+\noindent and search is invoked by calling the method {\tt search.findActions(problem)}.  Note that tree search was used in the example --- a {\tt GraphSearch} class is also provided by the AIMA library.  Class {\tt TestRubiksCube} contains an initial example to start with. The example also opens a visualization of a Rubik's cube in its initial solved state, and updates this representation with the initial random moves. If the search finds a path to the goal state, the resulting actions are also animated in the visualization. 
 
 \section{Uninformed Search Strategies}
 
@@ -207,31 +205,33 @@ How can the problem be overcome (without using heuristics)?  Try your solution a
 
 {\ex{}\label{ex:ex4} The moves you have used so far generate a symmetric search space, meaning that for all moves there exists an inverse (e.g., the changes brought about by action {\tt FRONT} are undone by action {\tt FRONTI}).  Can we remove the inverse moves? Is this true in general or only for the Rubik's Cube? Try the search strategies in Exercises~\ref{ex:ex1}--\ref{ex:ex3} with the modified action set --- to do so, replace the call to factory method
 \begin{lstlisting}
-RubiksCubeFunctionFactory.getSymmetricActionsFunction()
+RubiksCubeFunctionFactory.getSymActionsFunction()
 \end{lstlisting}
 with
 \begin{lstlisting}
-RubiksCubeFunctionFactory.getAsymmetricActionsFunction()
+RubiksCubeFunctionFactory.getAsymActionsFunction()
 \end{lstlisting}
 \vspace{0.1cm}}
 
 
 \section{Informed Search Strategies}
-A possible heuristic for the Rubik's Cube is the number of {\tt Cubie}s that are not in the goal position.  An implementation of this heuristic is provided for you in the codebase (see class {\tt MisplacedCubiesNotAdmissible}).
+A possible heuristic for the Rubik's Cube is the number of {\tt Cubie}s that are not in the goal position.  An implementation of this heuristic is provided for you in the code base (see class {\tt MisplacedCubiesNotAdmissible}).
 
-{\ex{}\label{ex:ex5} The {\tt MisplacedCubiesNotAdmissible} heuristic is not admissible --- why?  Modify the heuristic to make it admissible and implement it as class {\tt MisplacedCubiesAdmissible}. Run $\text{A}^\star$ with the two heuristics and compare the results.\vspace{0.1cm}}
+{\ex{}\label{ex:ex5} The {\tt MisplacedCubiesNotAdmissible} heuristic is not admissible --- why? Modify the heuristic to make it admissible, implementing it as a new class {\tt MisplacedCubiesAdmissible}. Run $\text{A}^\star$ with the two heuristics and compare the results.\vspace{0.1cm}}
 
 %{\ex{}\label{ex:ex6} Run $\text{A}^\star$ with the {\tt MisplacedCubiesAdmissible} heuristic and compare the results obtained with the non-admissible one.\vspace{0.1cm}}
 
 {\ex{}\label{ex:ex7} Implement the 3D Manhattan distance heuristic for the Rubik's Cube.  Why is 3D Manhattan distance not admissible?  Modify it to make it admissible, run $\text{A}^\star$ with the new heuristic and compare to the results obtained in Exercise~\ref{ex:ex5}.\vspace{0.1cm}}
 
-{\ex{}\label{ex:ex8} There are fewer corner cubies than there are edge cubies, hence the expected 3D Manhattan distance of corner cubies is lower.  Implement the heuristic {\tt CornerManhattanDistance}, which computes the sum of 3D Manhattan distances of corner cubies, and {\tt EdgeManhattanDistance}, which does the same but only for edge cubies.
-% Note that 3D Manhattan distance alone is not admissible --- how should it be modified so that it is?
-Which among {\tt CornerManhattanDistance} and {\tt EdgeManhattanDistance} will perform better?  Write your thoughts before implementing the heursitics, then verify with your implementation.\vspace{0.1cm}}
+{\ex{}\label{ex:ex8} There are fewer corner cubies than there are edge cubies, hence the expected 3D Manhattan distance of corner cubies is lower. Implement the heuristic {\tt CornerManhattanDistance}, which computes the sum of 3D Manhattan distances of corner cubies, and the heuristic {\tt EdgeManhattanDistance}, which does the same but only for edge cubies. Which among the two will perform better?  Write your thoughts before implementing the heuristics, then verify with your implementation.\vspace{0.1cm}}
 
 {\ex{}\label{ex:ex9} Devise and implement a heuristic that is guaranteed to perform better than, or as well as, all heuristics you have used so far.\vspace{0.1cm}}
 
 {\ex{}\label{ex:ex10} It has been shown that $\text{IDA}^\star$ achieves the best performance on the Rubik's Cube puzzle.  Implement this algorithm and verify this claim.\vspace{0.1cm}}
+
+{\ex{}\label{ex:ex11} The {\tt SearchForActions} interface is also implemented by the implementations of local search algorithms in AIMA. We can therefore, in principle, use local search to solve the Rubik's cube. Try solving the Rubik's cube with Simulated Annealing (class {\tt SimulatedAnnealingSearch}), using as energy function any of the heuristics you have used in the previous exercises. Why can't Simulated Annealing solve even the simplest problems obtained with $\text{{\tt r}} = 1$?\vspace{0.1cm}}
+
+{\ex{}\label{ex:ex12} Another local search algorithm we have studied can be used to solve simple Rubik's cube problems with $1 \leq \text{{\tt r}} \leq 3$. Which one? Explain why and try it out (the AIMA library implements this algorithm).\vspace{0.1cm}}
 
 %\bibliographystyle{apalike}
 %\bibliography{metaCSP}
