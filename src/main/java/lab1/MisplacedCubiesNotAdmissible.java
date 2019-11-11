@@ -1,8 +1,10 @@
 package lab1;
 
+import java.util.function.ToDoubleFunction;
+
 import aima.core.search.framework.evalfunc.HeuristicFunction;
 
-public class MisplacedCubiesNotAdmissible implements HeuristicFunction {
+public class MisplacedCubiesNotAdmissible implements HeuristicFunction, ToDoubleFunction<Object> {
 
 	private int [][][] goal;
 	private int n;
@@ -23,6 +25,7 @@ public class MisplacedCubiesNotAdmissible implements HeuristicFunction {
 	
 	
 	@Override
+	//Your in this method!
 	public double h(Object state) {
 		RubiksCube rc = (RubiksCube) state;	
 		int retVal = 0;
@@ -34,6 +37,11 @@ public class MisplacedCubiesNotAdmissible implements HeuristicFunction {
 			}
 		}
 		return ((double)retVal);
+	}
+	
+	@Override
+	public double applyAsDouble(Object arg0) {
+		return h(arg0);
 	}
 	
 }
