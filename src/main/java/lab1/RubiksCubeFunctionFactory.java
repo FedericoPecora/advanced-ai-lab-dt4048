@@ -12,14 +12,14 @@ public class RubiksCubeFunctionFactory {
 	private static ActionsFunction _actionsFunction = null;
 	private static ResultFunction _resultFunction = null;
 
-	public static ActionsFunction getSymmetricActionsFunction() {
+	public static ActionsFunction getSymActionsFunction() {
 		if (null == _actionsFunction) {
 			_actionsFunction = new RCactionFunction(true);
 		}
 		return _actionsFunction;
 	}
 
-	public static ActionsFunction getAsymmetricActionsFunction() {
+	public static ActionsFunction getAsymActionsFunction() {
 		if (null == _actionsFunction) {
 			_actionsFunction = new RCactionFunction(false);
 		}

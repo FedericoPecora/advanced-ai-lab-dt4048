@@ -122,13 +122,13 @@ public class RubiksCube {
 	 * Creates a (n x n x n) Rubik's Cube. Its state is obtained by applying a given number of random (symmetric) moves
 	 * from the "solved" state. 
 	 * @param n The dimension of the cube. 
-	 * @param moveNumber Number of initial random moves.
+	 * @param r Number of initial random moves.
 	 */
-	public RubiksCube(int n, int moveNumber){
+	public RubiksCube(int n, int r){
 		this.n = n;
 		cube = new Cubie[n][n][n];
 		initialize();
-		this.initialMoves = generateRandomMoves(moveNumber);
+		this.initialMoves = generateRandomMoves(r);
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class TestRubiksCube {
 		System.out.println("Initial moves: " + rubiksCube.getInitialMoves());
 		scv.showMoves(rubiksCube.getInitialMoves());
 		
-		Problem problem = new Problem(rubiksCube, RubiksCubeFunctionFactory.getSymmetricActionsFunction(), 
+		Problem problem = new Problem(rubiksCube, RubiksCubeFunctionFactory.getSymActionsFunction(), 
 				RubiksCubeFunctionFactory.getResultFunction(), new RCgoalTest());
 
 		SearchForActions search = new BreadthFirstSearch(new TreeSearch());
