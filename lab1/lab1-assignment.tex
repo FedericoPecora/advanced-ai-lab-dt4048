@@ -167,7 +167,7 @@ The moves are defined as in Figure~\ref{fig:rcMoves}.  Note that in the Rubik's 
 The constructor {\tt RubiksCube(n,r)} can be invoked to create an initial state for the Rubik's Cube problem, where {\tt n} is the size of the Rubik's Cube, and {\tt r} is a seed for creating an initial unsolved state. In this lab, we will focus on cubes with size $2 \leq n \leq 3$, although the implementation can be easily extended to accommodate $n > 3$.  The creation of an initial state based on {\tt r} consists of applying {\tt r} random moves to the solved state.  You can use larger values of {\tt r} to create more challenging problems --- note, however, that {\tt r} is not a good estimator of problem difficulty.
 
 \section{Search}
-In this lab we will use the AIMA implementations of uninformed and informed search algorithms.  To create a problem, four ingredients are needed: a {\tt RubiksCube} (which represents the initial state), a {\tt RubiksCubeFunctionFactory} (which provides the list of actions through methods {\tt getSymActionsFunction()} and {\tt getAsymActionsFunction}), a function to compute the state resulting from the application of a given action (method {\tt getResultFunction()} of class {\tt RubiksCubeFunctionFactory}), and a {\tt RCgoalTest} (which provides the goal test function):
+In this lab we will use the AIMA implementations of uninformed and informed search algorithms.  To create a problem, four ingredients are needed: (1)~an initial state, (2)~a function for computing the actions that are applicable in a given state, (3)~a function for computing the state resulting from the application of a given action in a given state, and (4)~a goal test function. (1)~is an instance of class {\tt RubiksCube}; (2)~and (3)~are provided by methods of class {\tt RubiksCubeFunctionFactory}; (4) is an instance of class {\tt RCgoalTest}. A {\tt Problem} is thus instantiated as follows:
 
 \begin{lstlisting}
 Problem problem =
@@ -229,9 +229,9 @@ A possible heuristic for the Rubik's Cube is the number of {\tt Cubie}s that are
 
 {\ex{}\label{ex:ex10} It has been shown that $\text{IDA}^\star$ achieves the best performance on the Rubik's Cube puzzle.  Implement this algorithm and verify this claim.\vspace{0.1cm}}
 
-{\ex{}\label{ex:ex11} The {\tt SearchForActions} interface is also implemented by the implementations of local search algorithms in AIMA. We can therefore, in principle, use local search to solve the Rubik's cube. Try solving the Rubik's cube with Simulated Annealing (class {\tt SimulatedAnnealingSearch}), using as energy function any of the heuristics you have used in the previous exercises. Why can't Simulated Annealing solve even the simplest problems obtained with $\text{{\tt r}} = 1$?\vspace{0.1cm}}
+{\ex{}\label{ex:ex11} The {\tt SearchForActions} interface is also implemented by local search algorithms in the AIMA library. We can therefore, in principle, use local search to solve the Rubik's cube. Try solving the Rubik's cube with Simulated Annealing (see class {\tt SimulatedAnnealingSearch}), using as energy function any of the heuristics you have used in the previous exercises. Why can't Simulated Annealing solve even the simplest problems obtained with $\text{{\tt r}} = 1$?\vspace{0.1cm}}
 
-{\ex{}\label{ex:ex12} Another local search algorithm we have studied can be used to solve simple Rubik's cube problems with $1 \leq \text{{\tt r}} \leq 3$. Which one? Explain why and try it out (the AIMA library implements this algorithm).\vspace{0.1cm}}
+{\ex{}\label{ex:ex12} Another local search algorithm we have studied can be used to solve simple Rubik's cube problems (e.g., problems obtained with $1 \leq \text{{\tt r}} \leq 3$). Which one? Explain why and try it out (the AIMA library implements this algorithm).\vspace{0.1cm}}
 
 %\bibliographystyle{apalike}
 %\bibliography{metaCSP}
