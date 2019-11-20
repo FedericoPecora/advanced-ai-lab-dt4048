@@ -9,6 +9,7 @@ import aima.core.search.framework.SearchForActions;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.framework.qsearch.TreeSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
+import aima.core.search.uninformed.DepthFirstSearch;
 import lab1.util.SimpleCubeViewer;
 
 public class TestRubiksCube {
@@ -17,7 +18,7 @@ public class TestRubiksCube {
 
 		SimpleCubeViewer scv = new SimpleCubeViewer(400, 400);
 		
-		RubiksCube rubiksCube = new RubiksCube(3, 4);
+		RubiksCube rubiksCube = new RubiksCube(3, 8);
 		
 		System.out.println("Initial moves: " + rubiksCube.getInitialMoves());
 		scv.showMoves(rubiksCube.getInitialMoves());
@@ -26,6 +27,7 @@ public class TestRubiksCube {
 				RubiksCubeFunctionFactory.getResultFunction(), new RCgoalTest());
 
 		SearchForActions search = new BreadthFirstSearch(new TreeSearch());
+		//SearchForActions search = new DepthFirstSearch(new TreeSearch());
 						
 		long start = Calendar.getInstance().getTimeInMillis();
 		List<Action> solution;

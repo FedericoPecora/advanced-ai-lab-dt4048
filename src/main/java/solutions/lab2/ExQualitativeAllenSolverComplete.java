@@ -1,6 +1,9 @@
 package solutions.lab2;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Random;
 import java.util.Vector;
 
 import org.metacsp.framework.Constraint;
@@ -23,23 +26,77 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	
 	private static final long serialVersionUID = 9130340233823443991L;
 	private int IDs = 0;
-	private ConstraintNetwork completeNetwork = null;
+	public ConstraintNetwork completeNetwork = null;
 	private boolean successfulPropagation = false;
 	
 	public ExQualitativeAllenSolverComplete() {
 		super(new Class[]{QualitativeAllenIntervalConstraint.class}, SimpleAllenInterval.class);
 		this.setOptions(OPTIONS.AUTO_PROPAGATE);
-		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * Populates a given solver's constraint network with a given number of variables and
+	 * random constraints among them.
+	 * @param solver A solver to use for variable creation and to add the constraints to.
+	 * @param numVars The number of variables to create.
+	 * @param probConnected The probability that two variables should be connected by a constraint.
+	 * @param maxRelations The maximum size of the set of disjunctive relations between two constraints.
+	 * @param propagateWhileAddingConstraints If set to <code>true</code>, generated constraints are
+	 * guaranteed to be k-consistent (depending on the level of k-consistency implemented in the
+	 * propagate function). 
+	 */
+	public static void generateRandomConstraintNetwork(ExQualitativeAllenSolverComplete solver, int numVars, double probConnected, int maxRelations, boolean propagateWhileAddingConstraints) {
+		Random rand = new Random(Calendar.getInstance().getTimeInMillis());
+		Variable[] vars = solver.createVariables(numVars);
+		for (int i = 0; i < numVars; i++) {
+			for (int j = 0; j < numVars; j++) {
+				if (i != j && rand.nextDouble() < probConnected) {
+					boolean retry = false;
+					do {
+						SimpleAllenInterval sai_i = (SimpleAllenInterval)vars[i];
+						SimpleAllenInterval sai_j = (SimpleAllenInterval)vars[j];
+						boolean[] types = new boolean[QualitativeAllenIntervalConstraint.Type.values().length];
+						for (int k = 0; k < types.length; k++) types[k] = false;
+						int numRelations = 1;
+						if (maxRelations > 1) numRelations += rand.nextInt(maxRelations-1);
+						Type[] typesForConstraint = new Type[numRelations];
+						while (numRelations > 0) {
+							if (rand.nextBoolean()) {
+								int l = rand.nextInt(types.length);
+								if (!types[l]) {
+									types[l] = true;
+									numRelations--;
+									typesForConstraint[numRelations] = QualitativeAllenIntervalConstraint.Type.values()[l];
+								}
+							}
+						}
+						QualitativeAllenIntervalConstraint aic = new QualitativeAllenIntervalConstraint(typesForConstraint);
+						aic.setFrom(sai_i);
+						aic.setTo(sai_j);
+						
+						if (propagateWhileAddingConstraints && !solver.addConstraint(aic)) {
+							//System.out.println("Could not add " + aic);
+							retry = true;
+						}
+						else {
+							if (!propagateWhileAddingConstraints) solver.addConstraintNoPropagation(aic);
+							retry = false;
+							System.out.println("Added " + aic);
+						}
+					}
+					while (retry);
+				}
+			}
+		}
 	}
 
 	@Override
-	public boolean propagate() {		
-		if(this.getConstraints().length == 0) return true;
-		createCompleteNetwork();
+	public boolean propagate() {	
 		successfulPropagation = false;
-		if (pathConsistency()) {
-			successfulPropagation = true;
-		}
+		if(this.getConstraints().length == 0) return true;
+		this.createCompleteNetwork();
+		successfulPropagation = false;
+		if (pathConsistency() && arcConsistency()) successfulPropagation = true;
 		return successfulPropagation;
 	}
 
@@ -50,31 +107,41 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	}
 
 	private void createCompleteNetwork() {
-		completeNetwork = new ConstraintNetwork(this);
+		this.completeNetwork = new ConstraintNetwork(this);
 		ConstraintNetwork originalNetwork = this.getConstraintNetwork();
-		for (Variable var : originalNetwork.getVariables()) completeNetwork.addVariable(var);
-		for (Constraint con : originalNetwork.getConstraints()) completeNetwork.addConstraint(con);
-		Variable[] vars = completeNetwork.getVariables();
+		for (Variable var : originalNetwork.getVariables()) this.completeNetwork.addVariable(var);
+		//for (Constraint con : originalNetwork.getConstraints()) this.completeNetwork.addConstraint(con);
+		Variable[] vars = this.completeNetwork.getVariables();
 		for (int i = 0; i < vars.length; i++) {
 			for (int j = 0; j < vars.length; j++) {
-				if (i != j && originalNetwork.getConstraint(vars[i],vars[j]) == null) {
-					if (originalNetwork.getConstraint(vars[j],vars[i]) != null) {
-						//add inverse
-						Type[] types = ((QualitativeAllenIntervalConstraint)originalNetwork.getConstraint(vars[j],vars[i])).getTypes();
-						Type[] inverses = QualitativeAllenIntervalConstraint.getInverseRelation(types);
-						QualitativeAllenIntervalConstraint inverse = new QualitativeAllenIntervalConstraint(inverses);
-						inverse.setFrom(vars[i]);
-						inverse.setTo(vars[j]);
-						completeNetwork.addConstraint(inverse);
+				if (i != j) {
+					if (originalNetwork.getConstraint(vars[i],vars[j]) == null) {
+						if (originalNetwork.getConstraint(vars[j],vars[i]) != null) {
+							//add inverse
+							Type[] types = ((QualitativeAllenIntervalConstraint)originalNetwork.getConstraint(vars[j],vars[i])).getTypes();
+							Type[] inverses = QualitativeAllenIntervalConstraint.getInverseRelation(types);
+							QualitativeAllenIntervalConstraint inverse = new QualitativeAllenIntervalConstraint(inverses);
+							inverse.setFrom(vars[i]);
+							inverse.setTo(vars[j]);
+							this.completeNetwork.addConstraint(inverse);
+						}
+						else {
+							//create universal relation
+							Type[] allTypes = new Type[QualitativeAllenIntervalConstraint.Type.values().length];
+							for (int k = 0; k < QualitativeAllenIntervalConstraint.Type.values().length; k++) allTypes[k] = QualitativeAllenIntervalConstraint.Type.values()[k];
+							QualitativeAllenIntervalConstraint universe = new QualitativeAllenIntervalConstraint(allTypes);
+							universe.setFrom(vars[i]);
+							universe.setTo(vars[j]);
+							this.completeNetwork.addConstraint(universe);
+						}
 					}
 					else {
-						//create universal relation
-						Type[] allTypes = new Type[QualitativeAllenIntervalConstraint.Type.values().length];
-						for (int k = 0; k < QualitativeAllenIntervalConstraint.Type.values().length; k++) allTypes[k] = QualitativeAllenIntervalConstraint.Type.values()[k];
-						QualitativeAllenIntervalConstraint universe = new QualitativeAllenIntervalConstraint(allTypes);
-						universe.setFrom(vars[i]);
-						universe.setTo(vars[j]);
-						completeNetwork.addConstraint(universe);
+						//add copy of constraint to complete network
+						Type[] types = ((QualitativeAllenIntervalConstraint)originalNetwork.getConstraint(vars[i],vars[j])).getTypes();
+						QualitativeAllenIntervalConstraint copy = new QualitativeAllenIntervalConstraint(types);
+						copy.setFrom(vars[i]);
+						copy.setTo(vars[j]);
+						this.completeNetwork.addConstraint(copy);
 					}
 				}
 			}	
@@ -100,6 +167,7 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		 * QualitativeAllenIntervalConstraint intersection = getIntersection(r1,r2);
 		 */
 
+		//System.out.println("Running path-consistency algorithm PC");
 		boolean fixedpoint = false;
 		Variable[] vars = this.completeNetwork.getVariables();
 		while (!fixedpoint) {
@@ -120,8 +188,9 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 								if (inters.getTypes().length == 0) return false;
 								//if inters != R_ij
 								if (inters.getTypes().length < r_ij.getTypes().length) {
-									completeNetwork.removeConstraint(r_ij);
-									completeNetwork.addConstraint(inters);
+									//System.out.println("Removed " + r_ij);
+									this.completeNetwork.removeConstraint(r_ij);
+									this.completeNetwork.addConstraint(inters);
 									fixedpoint = false;
 								}
 							}
@@ -132,7 +201,32 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		}
 		return true;
 	}
-
+	
+	private boolean arcConsistency() {
+		//System.out.println("Running arc-consistency algorithm AC1");
+		boolean fixedpoint = false;
+		Constraint[] cons = this.completeNetwork.getConstraints();
+		do {
+			fixedpoint = true;
+			for (Constraint con : cons) {
+				QualitativeAllenIntervalConstraint qc = (QualitativeAllenIntervalConstraint)con;
+				int typesBeforeRevision = qc.getTypes().length;
+				if (!revise(qc)) return false;
+				if (qc.getTypes().length < typesBeforeRevision) fixedpoint = false;
+			}
+		}
+		while(fixedpoint == false);
+		return true;
+	}
+	
+	/**
+	 * Computes the intersection of two {@link QualitativeAllenIntervalConstraint}s, that is,
+	 * the set of qualitative relations they have in common.
+	 * @param o1 The first constraint.
+	 * @param o2 The second constraint.
+	 * @return A constraint whose qualitative relations are the intersection of those of the
+	 * given constraints.
+	 */
 	private QualitativeAllenIntervalConstraint getIntersection(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
 		Vector<QualitativeAllenIntervalConstraint.Type> intersetction =  new Vector<QualitativeAllenIntervalConstraint.Type>();
 		for (Type t : o1.getTypes()) {
@@ -144,6 +238,13 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		return ret;
 	}
 	
+	/**
+	 * Computes the composition of two {@link QualitativeAllenIntervalConstraint}s according to Allen's
+	 * composition table.
+	 * @param o1 The first constraints.
+	 * @param o2 The second constraint.
+	 * @return A constraint whose qualitative relations are the result of composing the two given constraints.
+	 */
 	private QualitativeAllenIntervalConstraint getComposition(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
 		Vector<QualitativeAllenIntervalConstraint.Type> cmprelation =  new Vector<QualitativeAllenIntervalConstraint.Type>();
 		for (int t = 0; t < o1.getTypes().length; t++) {
@@ -159,18 +260,37 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		ret.setTo(o2.getTo());
 		return ret;
 	}
+	
+	/**
+	 * Removes every qualitative relation r from arc (x,y) such that arc (y,x) <i>does not</i> contain inverse(r).
+	 * @param qc A constraint, considered as arc (<code>qc.getFrom()</code>, <code>qc.getTo()</code>).
+	 * @return <code>false</code> iff the domain of qc.getFrom() has been emptied.
+	 */
+	private boolean revise(QualitativeAllenIntervalConstraint qc) {
+		ArrayList<Type> result = new ArrayList<Type>();
+		Type[] types = qc.getTypes();
+		QualitativeAllenIntervalConstraint qcInv = (QualitativeAllenIntervalConstraint)this.completeNetwork.getConstraints(qc.getTo(), qc.getFrom())[0];
+		Type[] invTypes = qcInv.getTypes();
+		for (Type t : types) {
+			Type tInv = QualitativeAllenIntervalConstraint.getInverseRelation(t);
+			for (Type t1 : invTypes) {
+				if (t1.equals(tInv)) {
+					result.add(t);
+					break;
+				}
+			}
+		}
+		qc.setTypes(result.toArray(new Type[result.size()]));
+		return !result.isEmpty();
+	}
 
 	@Override
 	protected boolean addConstraintsSub(Constraint[] c) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	protected void removeConstraintsSub(Constraint[] c) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void removeConstraintsSub(Constraint[] c) { }
 	
 	@Override
 	protected Variable[] createVariablesSub(int num) {
@@ -180,16 +300,10 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	}
 
 	@Override
-	protected void removeVariablesSub(Variable[] v) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void removeVariablesSub(Variable[] v) { }
 
 	@Override
-	public void registerValueChoiceFunctions() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void registerValueChoiceFunctions() { }
 	
 	public static void main(String[] args) {
 		ExQualitativeAllenSolverComplete solver = new ExQualitativeAllenSolverComplete(); 
@@ -217,19 +331,13 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 		con2.setTo(interval1);
 //		System.out.println("Adding constraint " + con2 + ": " + solver.addConstraint(con2));
 		
-		ConstraintNetwork.draw(solver.getConstraintNetwork(),"BEFORE PROPAGATION");
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		//Try to add the constraints
 		if (!solver.addConstraints(con0,con1,con2)) System.out.println("Failed to add constraints!");
 		else System.out.println("Added constraints!");
 		
-		ConstraintNetwork.draw(solver.getConstraintNetwork(),"AFTER PROPAGATION");
+		ConstraintNetwork.draw(solver.getConstraintNetwork(),"Constraint Network");
+
+		
 	}
 
 
