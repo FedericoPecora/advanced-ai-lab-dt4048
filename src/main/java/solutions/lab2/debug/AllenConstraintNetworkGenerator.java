@@ -2,12 +2,19 @@ package solutions.lab2.debug;
 
 import org.metacsp.framework.ConstraintNetwork;
 
+import solutions.lab2.AllenLabeling;
 import solutions.lab2.ExQualitativeAllenSolverComplete;
+import solutions.lab2.QualitativeAllenMetaSolver;
 
 public class AllenConstraintNetworkGenerator {
 	
 	public static void main(String[] args) {
-		ExQualitativeAllenSolverComplete solver = new ExQualitativeAllenSolverComplete();
+		
+		QualitativeAllenMetaSolver metaSolver = new QualitativeAllenMetaSolver();
+		metaSolver.addMetaConstraint(new AllenLabeling(null, null));
+		ExQualitativeAllenSolverComplete solver = (ExQualitativeAllenSolverComplete)metaSolver.getConstraintSolvers()[0];
+		//ExQualitativeAllenSolverComplete solver = new ExQualitativeAllenSolverComplete();
+		
 
 		//Simple test for infeasibility
 //		Variable[] vars = solver.createVariables(2);
@@ -29,11 +36,18 @@ public class AllenConstraintNetworkGenerator {
 //		//if (!solver.addConstraints(con0,con1)) System.out.println("Failed to add constraints!");
 		
 		//Generate random network
-		ExQualitativeAllenSolverComplete.generateRandomConstraintNetwork(solver, 8, 0.4, 2, false);
+		ExQualitativeAllenSolverComplete.generateRandomConstraintNetwork(solver, 4, 1.0, 4, true);
 		if (!solver.propagate()) System.out.println("Failed to propagate!");
 		else System.out.println("Propagation successful!");
 				
 		ConstraintNetwork.draw(solver.getConstraintNetwork(),"Randomly generated network");
+		
+		boolean solved = metaSolver.backtrack();
+		System.out.println("Solved? " + solved);
+		
+		metaSolver.draw();
+		
+		
 		
 	}
 

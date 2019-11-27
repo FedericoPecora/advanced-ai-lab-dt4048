@@ -127,12 +127,7 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 						}
 						else {
 							//create universal relation
-							Type[] allTypes = new Type[QualitativeAllenIntervalConstraint.Type.values().length];
-							for (int k = 0; k < QualitativeAllenIntervalConstraint.Type.values().length; k++) allTypes[k] = QualitativeAllenIntervalConstraint.Type.values()[k];
-							QualitativeAllenIntervalConstraint universe = new QualitativeAllenIntervalConstraint(allTypes);
-							universe.setFrom(vars[i]);
-							universe.setTo(vars[j]);
-							this.completeNetwork.addConstraint(universe);
+							this.completeNetwork.addConstraint(createUniversalConstraint(vars[i], vars[j]));
 						}
 					}
 					else {
@@ -146,6 +141,15 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 				}
 			}	
 		}
+	}
+	
+	public static QualitativeAllenIntervalConstraint createUniversalConstraint(Variable v1, Variable v2) {
+		Type[] allTypes = new Type[QualitativeAllenIntervalConstraint.Type.values().length];
+		for (int k = 0; k < QualitativeAllenIntervalConstraint.Type.values().length; k++) allTypes[k] = QualitativeAllenIntervalConstraint.Type.values()[k];
+		QualitativeAllenIntervalConstraint universe = new QualitativeAllenIntervalConstraint(allTypes);
+		universe.setFrom(v1);
+		universe.setTo(v2);
+		return universe;
 	}
 
 	
@@ -227,7 +231,7 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	 * @return A constraint whose qualitative relations are the intersection of those of the
 	 * given constraints.
 	 */
-	private QualitativeAllenIntervalConstraint getIntersection(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
+	public static QualitativeAllenIntervalConstraint getIntersection(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
 		Vector<QualitativeAllenIntervalConstraint.Type> intersetction =  new Vector<QualitativeAllenIntervalConstraint.Type>();
 		for (Type t : o1.getTypes()) {
 			if (Arrays.asList(o2.getTypes()).contains(t)) intersetction.add(t);
@@ -245,7 +249,7 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	 * @param o2 The second constraint.
 	 * @return A constraint whose qualitative relations are the result of composing the two given constraints.
 	 */
-	private QualitativeAllenIntervalConstraint getComposition(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
+	public static QualitativeAllenIntervalConstraint getComposition(QualitativeAllenIntervalConstraint o1, QualitativeAllenIntervalConstraint o2) {
 		Vector<QualitativeAllenIntervalConstraint.Type> cmprelation =  new Vector<QualitativeAllenIntervalConstraint.Type>();
 		for (int t = 0; t < o1.getTypes().length; t++) {
 			for (int t2 = 0; t2 < o2.getTypes().length; t2++) {
@@ -266,7 +270,7 @@ public class ExQualitativeAllenSolverComplete extends ConstraintSolver {
 	 * @param qc A constraint, considered as arc (<code>qc.getFrom()</code>, <code>qc.getTo()</code>).
 	 * @return <code>false</code> iff the domain of qc.getFrom() has been emptied.
 	 */
-	private boolean revise(QualitativeAllenIntervalConstraint qc) {
+	public boolean revise(QualitativeAllenIntervalConstraint qc) {
 		ArrayList<Type> result = new ArrayList<Type>();
 		Type[] types = qc.getTypes();
 		QualitativeAllenIntervalConstraint qcInv = (QualitativeAllenIntervalConstraint)this.completeNetwork.getConstraints(qc.getTo(), qc.getFrom())[0];

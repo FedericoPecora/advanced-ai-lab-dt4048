@@ -67,13 +67,13 @@ public class TestRubiksCubeComplete {
 		
 		// Can we do better?  Implement 3D-MD.  Is it admissible?
 		// [No: need to /16]
-//		SearchForActions search = new AStarSearch(new GraphSearch(), new ManhattanDistance(rubiksCube));
+		SearchForActions search = new AStarSearch(new GraphSearch(), new ManhattanDistance(rubiksCube));
 		
 		// MAX {MH_corners, MH_edges} is better, try it...
 		// [Note: need to /8]
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new CornerManhattanDistance(rubiksCube));
 //		SearchForActions search = new AStarSearch(new GraphSearch(), new EdgeManhattanDistance(rubiksCube));
-		SearchForActions search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
+//		SearchForActions search = new AStarSearch(new GraphSearch(), new MaximumManhattanDistance(rubiksCube));
 		
 		// This does not even work for r = 1! This is because SA makes random moves intentionally
 		// in the beginning, so it immediately jumps several moves away from the solved state...

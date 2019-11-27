@@ -213,30 +213,29 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 	}
 	
 	/**
-	 * Removes every qualitative relation r from arc (x,y) such that arc (y,x) <i>does not</i> contain inverse(r).
+	 * WHAT SHOULD THIS DO?
 	 * @param qc A constraint, considered as arc (<code>qc.getFrom()</code>, <code>qc.getTo()</code>).
-	 * @return <code>false</code> iff the domain of qc.getFrom() has been emptied.
+	 * @return <code>false</code> iff the domain of qc.getFrom() "has been emptied".
 	 */
 	private boolean revise(QualitativeAllenIntervalConstraint qc) {
-		ArrayList<Type> result = new ArrayList<Type>();
-		Type[] types = qc.getTypes();
-		QualitativeAllenIntervalConstraint qcInv = (QualitativeAllenIntervalConstraint)this.completeNetwork.getConstraints(qc.getTo(), qc.getFrom())[0];
-		Type[] invTypes = qcInv.getTypes();
-		for (Type t : types) {
-			Type tInv = QualitativeAllenIntervalConstraint.getInverseRelation(t);
-			for (Type t1 : invTypes) {
-				if (t1.equals(tInv)) {
-					result.add(t);
-					break;
-				}
-			}
-		}
-		qc.setTypes(result.toArray(new Type[result.size()]));
-		return !result.isEmpty();
+		//YOUR CODE HERE!
+		return false;
 	}
 	
 	private boolean arcConsistency() {
-		//YOUR CODE HERE!
+		//System.out.println("Running arc-consistency algorithm AC1");
+		boolean fixedpoint = false;
+		Constraint[] cons = this.completeNetwork.getConstraints();
+		do {
+			fixedpoint = true;
+			for (Constraint con : cons) {
+				QualitativeAllenIntervalConstraint qc = (QualitativeAllenIntervalConstraint)con;
+				int typesBeforeRevision = qc.getTypes().length;
+				if (!revise(qc)) return false;
+				if (qc.getTypes().length < typesBeforeRevision) fixedpoint = false;
+			}
+		}
+		while(fixedpoint == false);
 		return true;
 	}
 
