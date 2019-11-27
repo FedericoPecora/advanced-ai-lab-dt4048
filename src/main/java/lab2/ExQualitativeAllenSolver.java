@@ -13,8 +13,6 @@ import org.metacsp.framework.Variable;
 import org.metacsp.time.qualitative.QualitativeAllenIntervalConstraint;
 import org.metacsp.time.qualitative.QualitativeAllenIntervalConstraint.Type;
 
-import solutions.lab2.ExQualitativeAllenSolverComplete;
-
 import org.metacsp.time.qualitative.SimpleAllenInterval;
 
 
@@ -49,7 +47,7 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 	 * guaranteed to be k-consistent (depending on the level of k-consistency implemented in the
 	 * propagate function). 
 	 */
-	public static void generateRandomConstraintNetwork(ExQualitativeAllenSolverComplete solver, int numVars, double probConnected, int maxRelations, boolean propagateWhileAddingConstraints) {
+	public static void generateRandomConstraintNetwork(ExQualitativeAllenSolver solver, int numVars, double probConnected, int maxRelations, boolean propagateWhileAddingConstraints) {
 		Random rand = new Random(Calendar.getInstance().getTimeInMillis());
 		Variable[] vars = solver.createVariables(numVars);
 		for (int i = 0; i < numVars; i++) {
