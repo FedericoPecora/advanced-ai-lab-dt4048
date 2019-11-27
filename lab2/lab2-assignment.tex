@@ -98,9 +98,9 @@
 
 \title{Advanced Artificial Intelligence (DT4048)\\{\em Lab 2: Temporal Reasoning}}
 
-\author{Masoumeh Mansouri, Federico Pecora\\Center for Applied Autonomous Sensor Systems\\\"Orebro University, SE-70182 Sweden\\\url{{masoumeh.mansouri, federico.pecora}@oru.se}}
+\author{Federico Pecora\\Center for Applied Autonomous Sensor Systems\\\"Orebro University, SE-70182 Sweden\\\url{federico.pecora@oru.se}}
 
-\date{Fall term 2015 (HT2015)}
+\date{Fall term 2019 (HT2019)}
 
 \begin{document}
 
@@ -108,27 +108,28 @@
 
 \section{Setup}
 
-Change directory to {\tt advanced-ai-lab-dt4048}, update the codebase, and compile (see also lab 1):
+Change directory to {\tt advanced-ai-lab-dt4048}, update the codebase, compile, and refresh the eclipse project if you have one (see also lab 1):
 
 \begin{lstlisting}
 $ cd advanced-ai-lab-dt4048
 $ git pull
 $ ./gradlew install
+$ ./gradlew eclipse
 \end{lstlisting}
-
-\noindent Open Eclipse and you are ready to start!
 
 \section{Qualitative Temporal Reasoning}
 
-Class {\tt lab2.ExQualitativeAllenSolver} provides a partial implementation of a qualitative temporal solver for Allen Interval Constraints.  The {\tt pathConsistency()} method implements a path consistency checking algorithm.  This method is called by the method {\tt propagate()}, which in turn is called whenever constraints are added to the solver by means of the {\tt addConstraint()} or {\tt addConstraints()} methods. The {\tt main()} method in class {\tt ExQualitativeAllenSolver} provides an example of instantiating a {\tt ExQualitativeAllenSolver}, creating three variables and imposing qualitative temporal constraints among them.  The variables are of type {\tt SimpleAllenInterval}, whereas qualitative temporal relations are constraints of type {\tt QualitativeAllenIntervalConstraint}.  The {\tt pathConsistency()} method just returns {\tt true}, hence, it does nothing in the given implementation.
+Class {\tt lab2.ExQualitativeAllenSolver} provides a partial implementation of a qualitative temporal solver for Allen Interval Constraints.  A path consistency checking algorithm is implemented in method {\tt pathConsistency()}.  This method is called by the method {\tt propagate()}, which in turn is called whenever constraints are added to the solver by means of the {\tt addConstraint()} or {\tt addConstraints()} methods. The {\tt main()} method in class {\tt ExQualitativeAllenSolver} provides an example of instantiating a {\tt ExQualitativeAllenSolver}, creating three variables and imposing qualitative temporal constraints among them.  The variables are of type {\tt SimpleAllenInterval}, whereas qualitative temporal relations are constraints of type {\tt QualitativeAllenIntervalConstraint}.  In the implementation you are given, the {\tt pathConsistency()} method just returns {\tt true} (hence, it does not enforece path consistency).
 
-{\ex{}\label{ex:ex1}  Are the constraints in the example consistent?  If not, why?  If they are, what should the resulting constarint network look like after path consistency is imposed?\vspace{0.1cm}}
+{\ex{}\label{ex:ex1}  The example constraint network is not path consistent, why? What should the resulting constraint network look like after path consistency is imposed?\vspace{0.1cm}}
 
 {\ex{}\label{ex:ex2} Implement the {\tt pathConsistency()} method, re-run the example, and check that it achieves the desired result.  Experiment with a larger constraint network and more constraints (try to add several inconsistent constraints as well). \vspace{0.1cm}}
 
+{\ex{}\label{ex:ex2a} What does arc-consistency mean in the context of qualitative temporal networks? An implmentation of the {\tt arcConsistency()} method is given, but, crucially, it is missing the {\tt revise()} procedure, which you are asked to implement. Test the combined arc- and path-consistency checking algorithms on the examples you have run so far. \vspace{0.1cm}}
+
 
 \section{TCSP}
-Open class {\tt lab2.examples.TCSPExample}, which shows how to instantiate a TCSP solver.  Disjunctive constraints are instances of {\tt DistanceConstraints}. A {\tt MultiTimepoint} is a time point whose domain is a multitude of pairs of bounds, depending on the disjunctions in the constraints.  In the example, two variables if type {\tt MultiTimepoint} are created.  A disjunctive constraint is added between one and the origin of time, while the other one is constrained (again with the origin of time) through a non-disjunctive constraint.  Observe the three printouts of the domains of these two variables: once before adding the constraints, once after adding the constraints, and once after solving.  This illustrates the difference between propagation and search in TCSPs: propagation cannot refine the domain of a variable bound by disjunctive constraints, whereas it can for a variable bound by non-disjunctive constraints. The example also opens a {\tt SearchTreeFrame} window, which displays the portion of the search tree explored by the TCSP solver (recall, the TCSP here is a Meta-CSP, i.e., a CSP whose variables are disjunctive constraints).
+Open class {\tt lab2.examples.TCSPExample}, which shows how to instantiate a TCSP solver.  Disjunctive constraints are instances of {\tt DistanceConstraints}. A {\tt MultiTimepoint} is a time point whose domain is a multitude of pairs of bounds, depending on the disjunctions in the constraints.  In the example, two variables of type {\tt MultiTimepoint} are created.  A disjunctive constraint is added between one and the origin of time, while the other one is constrained (again with the origin of time) through a non-disjunctive constraint.  Observe the three printouts of the domains of these two variables: once before adding the constraints, once after adding the constraints, and once after solving.  This illustrates the difference between propagation and search in TCSPs: propagation cannot refine the domain of a variable bound by disjunctive constraints, whereas it can for a variable bound by non-disjunctive constraints. The example also opens a {\tt SearchTreeFrame} window, which displays the portion of the search tree explored by the TCSP solver (recall, the TCSP here is a Meta-CSP, i.e., a CSP whose variables are disjunctive constraints).
 
 Consider the following scenario:
 
@@ -157,57 +158,57 @@ Note that there are solutions other than earliest and latest time solution. Impl
 \vspace{0.1cm}}
 
 
-\section{From Time Points to Activities}
-A pair of time points can be used to model the start and end times of intervals.  Qualitative temporal constraints can be understood as sets of metric temporal constraints.  For example, the qualitative relation
-\begin{align}
-\text{IntervalA} \;\{\text{before} \vee \text{meets}\}\; \text{InteravlB}\nonumber
-\end{align}
-can be understood as the metric constraint
-\begin{align}
-t_e^{\text{IntervalA}} \xrightarrow{[0,\infty)} t_s^{\text{IntervalB}},\nonumber
-\end{align}
-where $t_s^{(\cdot)}$ and $t_e^{(\cdot)}$ are, respectively, start and end time points of interval $(\cdot)$.  We can thus obtain what we will call in the lectures an Augmented Allen Interval Algebra, where all 13 qualitative temporal relations in Allen's algebra are expressed as collections of metric relations.  If we limit ourselves to expressing only basic Allen relations, then the resulting collection of metric relations is a STP.
+% \section{From Time Points to Activities}
+% A pair of time points can be used to model the start and end times of intervals.  Qualitative temporal constraints can be understood as sets of metric temporal constraints.  For example, the qualitative relation
+% \begin{align}
+% \text{IntervalA} \;\{\text{before} \vee \text{meets}\}\; \text{InteravlB}\nonumber
+% \end{align}
+% can be understood as the metric constraint
+% \begin{align}
+% t_e^{\text{IntervalA}} \xrightarrow{[0,\infty)} t_s^{\text{IntervalB}},\nonumber
+% \end{align}
+% where $t_s^{(\cdot)}$ and $t_e^{(\cdot)}$ are, respectively, start and end time points of interval $(\cdot)$.  We can thus obtain what we will call in the lectures an Augmented Allen Interval Algebra, where all 13 qualitative temporal relations in Allen's algebra are expressed as collections of metric relations.  If we limit ourselves to expressing only basic Allen relations, then the resulting collection of metric relations is a STP.
 
-Class {\tt ExActivityNetworkSolver} shows how to instantiate a solver of type {\tt ActivityNetworkSolver}, which is a solver whose variables are so-called ``activities'', that is, pairs of time points associated with a symbol.  The example shows how to create activities, add Augmented Allen interval relations among them (constraints of type {\tt AllenIntervalConstraint}) and view the constraint network.  Note that there are 3 ``layers'' of constraint networks:
-\begin{description}
-\item[Layer 2 (Activity network solver):] a network of Augmented Allen Interval constraints (constraints of type {\tt AllenIntervalConstraint}) among variables of type {\tt Activity}.
-\item[Layer 1 (Augmented Allen constarint solver):] a network of Augmented Allen Interval constraints (constraints of type {\tt AllenIntervalConstraint}) among variables of type {\tt AllenInterval}.
-\item[Layer 0 (STP solver):] a network of Simple Distance Constraints (constraints of type {\tt SimpleDistanceConstraint}) among variables of type {\tt TimePoint}.
-\end{description}
+% Class {\tt ExActivityNetworkSolver} shows how to instantiate a solver of type {\tt ActivityNetworkSolver}, which is a solver whose variables are so-called ``activities'', that is, pairs of time points associated with a symbol.  The example shows how to create activities, add Augmented Allen interval relations among them (constraints of type {\tt AllenIntervalConstraint}) and view the constraint network.  Note that there are 3 ``layers'' of constraint networks:
+% \begin{description}
+% \item[Layer 2 (Activity network solver):] a network of Augmented Allen Interval constraints (constraints of type {\tt AllenIntervalConstraint}) among variables of type {\tt Activity}.
+% \item[Layer 1 (Augmented Allen constarint solver):] a network of Augmented Allen Interval constraints (constraints of type {\tt AllenIntervalConstraint}) among variables of type {\tt AllenInterval}.
+% \item[Layer 0 (STP solver):] a network of Simple Distance Constraints (constraints of type {\tt SimpleDistanceConstraint}) among variables of type {\tt TimePoint}.
+% \end{description}
 
-{\ex{}\label{ex:ex8}
-The constraint network created in {\tt ExActivityNetworkSolver} is consistent, i.e., the call to {\tt addConstraints()} returns {\tt true}, and the constraints are added to the network.  Add one or more constraints to the network that would make it inconsistent.  Observe the resulting network, and note that inconsistent constraints are not added to it.
-\vspace{0.1cm}}
+% {\ex{}\label{ex:ex8}
+% The constraint network created in {\tt ExActivityNetworkSolver} is consistent, i.e., the call to {\tt addConstraints()} returns {\tt true}, and the constraints are added to the network.  Add one or more constraints to the network that would make it inconsistent.  Observe the resulting network, and note that inconsistent constraints are not added to it.
+% \vspace{0.1cm}}
 
 
-\section{Abductive Reasoning via STPs}
+% \section{Abductive Reasoning via STPs}
 
-{\em Abductive reasoning} is a form of logical inference that goes from an observation to a hypothesis that accounts for the observation.  Abductive reasoning can be performed with temporal inference to verify whether temporal observations support a particular temporal hyothesis.  Assume you are given a metric temporal constraint network $S$, and that the timepoints and constraints in this network represent readings coming from sensors in the environment.  Verifying if a given set of temporal facts $H$ among sensor readings holds can be achieved by modeling the relations in $H$ as temporal constraints and verifying if the constraint network $S \cup H$ is consistent.  The STP is an appropriate model for verifying the consistency of temporal hypotheses, as consistency checking takes $\Theta(n^3)$ time.  As we know from the lectures and the previous exercise, the consistency of Augmented Allen Interval constraints is checked via their translation to simple temporal constaints in a STP.  We can hence use Augmented Allen interval constraints to perform abductive temporal reasoning: given a network $S$ of activities and Augmented Allen interval constraints that represent observations, we can construct a further set of activities and constraints $H$ that models a hypothesis, and verify if the hypothesis holds by simply checking the consistency of the constraint network $S \cup H$ with an {\tt ActivityNetworkSolver}.
+% {\em Abductive reasoning} is a form of logical inference that goes from an observation to a hypothesis that accounts for the observation.  Abductive reasoning can be performed with temporal inference to verify whether temporal observations support a particular temporal hyothesis.  Assume you are given a metric temporal constraint network $S$, and that the timepoints and constraints in this network represent readings coming from sensors in the environment.  Verifying if a given set of temporal facts $H$ among sensor readings holds can be achieved by modeling the relations in $H$ as temporal constraints and verifying if the constraint network $S \cup H$ is consistent.  The STP is an appropriate model for verifying the consistency of temporal hypotheses, as consistency checking takes $\Theta(n^3)$ time.  As we know from the lectures and the previous exercise, the consistency of Augmented Allen Interval constraints is checked via their translation to simple temporal constaints in a STP.  We can hence use Augmented Allen interval constraints to perform abductive temporal reasoning: given a network $S$ of activities and Augmented Allen interval constraints that represent observations, we can construct a further set of activities and constraints $H$ that models a hypothesis, and verify if the hypothesis holds by simply checking the consistency of the constraint network $S \cup H$ with an {\tt ActivityNetworkSolver}.
 
-Class {\tt ExAbductiveReasoningWithSTPs} implements a simple continuous loop during which sensor readings are read from ``scripts'' (see the files in directory {\tt sensorTraces}) and modeled as variables of type {\tt Activity} and constraints of type {\tt AllenIntervalConstraint}.  An {\tt ActivityNetworkSolver} is provided to maintain these constraints.  The loop is realized by a continuously running thread of type {\tt ConstraintNetworkAnimator}.  It uses the sensor traces to create variables and constraints that model the sensor readings as they come in, adding them to the  {\tt ActivityNetworkSolver}. The contents of the constraint network are visualized in the form of timelines for better reading.
+% Class {\tt ExAbductiveReasoningWithSTPs} implements a simple continuous loop during which sensor readings are read from ``scripts'' (see the files in directory {\tt sensorTraces}) and modeled as variables of type {\tt Activity} and constraints of type {\tt AllenIntervalConstraint}.  An {\tt ActivityNetworkSolver} is provided to maintain these constraints.  The loop is realized by a continuously running thread of type {\tt ConstraintNetworkAnimator}.  It uses the sensor traces to create variables and constraints that model the sensor readings as they come in, adding them to the  {\tt ActivityNetworkSolver}. The contents of the constraint network are visualized in the form of timelines for better reading.
 
-{\ex{}\label{ex:ex9}
-Run {\tt ExAbductiveReasoningWithSTPs} and observe how the the timelines evolve as sensor readings come in.  It is possible for the constraint network to become inconsistent because of sensor readings?
-\vspace{0.1cm}}
+% {\ex{}\label{ex:ex9}
+% Run {\tt ExAbductiveReasoningWithSTPs} and observe how the the timelines evolve as sensor readings come in.  It is possible for the constraint network to become inconsistent because of sensor readings?
+% \vspace{0.1cm}}
 
-An example of a temporal hypothesis expressed as Augmented Allen Interval constraints is the following:
+% An example of a temporal hypothesis expressed as Augmented Allen Interval constraints is the following:
 
-\begin{align}
-\text{Human-is-Cooking} &\;\{\text{equals}\}\; \text{Stove-is-On}\nonumber\\
-\text{Human-is-Cooking} &\;\{\text{during}\}\; \text{Location-is-Kitchen}\nonumber
-\end{align} 
+% \begin{align}
+% \text{Human-is-Cooking} &\;\{\text{equals}\}\; \text{Stove-is-On}\nonumber\\
+% \text{Human-is-Cooking} &\;\{\text{during}\}\; \text{Location-is-Kitchen}\nonumber
+% \end{align} 
 
-The hypothesis states that cooking occurs when a human turns on the stove while being in the kitchen.  The temporal extent of the cooking activity is exaclty that of the stove being in state on (see first constraint).
+% The hypothesis states that cooking occurs when a human turns on the stove while being in the kitchen.  The temporal extent of the cooking activity is exaclty that of the stove being in state on (see first constraint).
 
-If an instance of interface {\tt InferenceCallback} is given, at every iteration (once every {\tt period} milliseconds), the {\tt ConstraintNetworkAnimator} will execute the method {\tt doInference()} implemented in the instance of the interface.
+% If an instance of interface {\tt InferenceCallback} is given, at every iteration (once every {\tt period} milliseconds), the {\tt ConstraintNetworkAnimator} will execute the method {\tt doInference()} implemented in the instance of the interface.
 
-{\ex{}\label{ex:ex10}
-Provide an implementation of this method so that it checks whether the hypothesis ``Cooking'' holds, and adds an {\tt Activity} to the constraint network that represents the ``Cooking'' activity.
-\vspace{0.1cm}}
+% {\ex{}\label{ex:ex10}
+% Provide an implementation of this method so that it checks whether the hypothesis ``Cooking'' holds, and adds an {\tt Activity} to the constraint network that represents the ``Cooking'' activity.
+% \vspace{0.1cm}}
 
-{\ex{}\label{ex:ex11}
-Why does the hypothesis appear on the ``Human'' timeline only after the stove is turned off? Modify the temporal constraints in the hypothesis so cooking is recognized as soon as the stove is turned on.
-\vspace{0.1cm}}
+% {\ex{}\label{ex:ex11}
+% Why does the hypothesis appear on the ``Human'' timeline only after the stove is turned off? Modify the temporal constraints in the hypothesis so cooking is recognized as soon as the stove is turned on.
+% \vspace{0.1cm}}
 
 %\bibliographystyle{apalike}
 %\bibliography{metaCSP}
