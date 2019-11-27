@@ -54,7 +54,7 @@ public class ExTCSP {
 		MultiTimePoint guestOrder = (MultiTimePoint)groundSolver.createVariable();
 		
 
-		//add more variable here
+		//add more variables here
 		//your code here
 		
 		ConstraintNetwork.draw(groundSolver.getConstraintNetwork(), "TCSP");
@@ -68,10 +68,10 @@ public class ExTCSP {
 		guestOrderTime.setTo(guestOrder);
 		cons.add(guestOrderTime);
 		
-		//add more constraint here
+		//add more constraints here
 		//your code here
 		
-		//here you add a constraints into teh ground solver
+		//example of adding a constraint to the ground solver
 		groundSolver.addConstraints(cons.toArray(new DistanceConstraint[cons.size()]));
 		
 		VariableOrderingH varOH = new MostConstrainedFirstVarOH();
