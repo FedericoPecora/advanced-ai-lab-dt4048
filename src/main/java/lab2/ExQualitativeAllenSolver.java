@@ -219,7 +219,7 @@ public class ExQualitativeAllenSolver extends ConstraintSolver {
 	 */
 	private boolean revise(QualitativeAllenIntervalConstraint qc) {
 		//YOUR CODE HERE!
-		return false;
+		return true;
 	}
 	
 	private boolean arcConsistency() {
