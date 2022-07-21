@@ -36,7 +36,7 @@ public class AllenConstraintNetworkGenerator {
 //		//if (!solver.addConstraints(con0,con1)) System.out.println("Failed to add constraints!");
 		
 		//Generate random network
-		ExQualitativeAllenSolverComplete.generateRandomConstraintNetwork(solver, 4, 1.0, 4, true);
+		ExQualitativeAllenSolverComplete.generateRandomConstraintNetwork(solver, 3, 0.5, 1, true);
 		if (!solver.propagate()) System.out.println("Failed to propagate!");
 		else System.out.println("Propagation successful!");
 				
